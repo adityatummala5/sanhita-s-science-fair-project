@@ -67,6 +67,9 @@ def setup_backend(kind: str):
                *sorted(glob.glob("/opt/openfoam*/etc/bashrc"), reverse=True)]
         rc = next((p for p in rcs if p and os.path.exists(p)), None)
         if rc is None:
+            if shutil.which("docker"):
+                sys.exit("Docker is installed but not running. Start Docker Desktop (or `sudo dockerd`) "
+                         "and run again.")
             sys.exit("No usable OpenFOAM found. Install Docker (recommended) or OpenFOAM v2206+, "
                      "or set FOAM_BASHRC=/path/to/openfoam/etc/bashrc")
         dump = subprocess.run(["bash", "-c", f"source '{rc}' >/dev/null 2>&1; env -0"],
@@ -158,7 +161,7 @@ def mesh_case(cdir: str, preset: str, np_: int, parallel_snappy: bool) -> dict:
     return info
 
 
-def solve_case(cdir: str, mode: str, np_: int):
+def solve_case(cdir: str, mode: str, np_: int, all_times: bool = False):
     app = "pimpleFoam" if mode == "pulsatile" else "simpleFoam"
     if np_ > 1:
         sh(["decomposePar", "-force"], cdir, "decomposePar")
@@ -166,7 +169,9 @@ def solve_case(cdir: str, mode: str, np_: int):
             shutil.copytree(os.path.join(cdir, "constant/boundaryData"),
                             os.path.join(pd, "constant/boundaryData"), dirs_exist_ok=True)
         sh([app], cdir, app, np_)
-        sh(["reconstructPar", "-latestTime"], cdir, "reconstructPar")
+        sh(["reconstructPar"] + ([] if all_times else ["-latestTime"]), cdir, "reconstructPar")
+        for pd in glob.glob(os.path.join(cdir, "processor*")):
+            shutil.rmtree(pd)       # reconstructed; processor copies only waste disk
     else:
         sh([app], cdir, app)
 
@@ -185,6 +190,9 @@ def main():
     ap.add_argument("--serial-snappy", action="store_true", help="run snappyHexMesh on one core")
     ap.add_argument("--backend", default="auto", choices=["auto", "docker", "native"])
     ap.add_argument("--cycles", type=int, default=None, help="override number of cardiac cycles")
+    ap.add_argument("--snapshots", type=int, default=None, help="override snapshots written per cycle")
+    ap.add_argument("--keep-snapshots", action="store_true",
+                    help="reconstruct every snapshot of the last cycle (needed for animations/platelets)")
     ap.add_argument("--end-time", type=float, default=None,
                     help="SMOKE TEST ONLY: stop the pulsatile run early at this time (s)")
     args = ap.parse_args()
@@ -255,6 +263,8 @@ def main():
             pc = dict(cfg["pulsatile"])
             if args.cycles:
                 pc["n_cycles"] = args.cycles
+            if args.snapshots:
+                pc["snapshots_per_cycle"] = args.snapshots
             T, Q = wf.load(rel(inl["waveform_csv"]), inl["period_s"], inl.get("mean_mL_min"),
                            inl.get("peak_mL_min"), pc["n_cycles"])
             fc.write_inlet_data(cdir, dom, T, Q)
@@ -278,7 +288,7 @@ def main():
               f"{'OK' if mesh_info['mesh_ok'] else str(mesh_info['failed_checks']) + ' failed checks'}")
         json.dump(mesh_info, open(os.path.join(cdir, "mesh.json"), "w"), indent=2)
 
-        solve_case(cdir, args.mode, args.np)
+        solve_case(cdir, args.mode, args.np, all_times=args.keep_snapshots)
 
         import post  # noqa: E402  (imports pyvista; only needed here)
         m = post.analyse(cdir, dom, phys_d, args.mode, name, inl)

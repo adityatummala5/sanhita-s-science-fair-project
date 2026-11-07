@@ -50,6 +50,14 @@
       "description": "CONTROL: untextured stent sector (stent fr.stl)"
     },
     {
+      "name": "bare_newtonian",
+      "type": "bare",
+      "physics": {
+        "newtonian": true
+      },
+      "description": "bare stent, Newtonian fluid with blood's high-shear viscosity (3.5 mPa s) - compare with Carreau 'bare'"
+    },
+    {
       "name": "student_sector",
       "type": "import",
       "stl": "../cad models/stent with just dermal dentciles {1}/stent_denticle_CFD_sector.zip",

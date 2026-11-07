@@ -81,6 +81,12 @@ python3 run.py --mode steady --preset fine --only bare,D1_baseline
 python3 run.py --mode pulsatile --preset medium --np 8
 ```
 
+5. Preliminary bare-stent check (Newtonian vs Carreau flow, plus platelet adhesion). This writes GIFs and data to `results/preliminary/`; see the README there:
+
+```bash
+python3 preliminary.py
+```
+
 Useful options:
 
 | Option | Meaning |
@@ -186,6 +192,32 @@ Steady mode gives only WSS-based metrics, with OSI = 0. OSI and RRT need the pul
 
 ---
 
+### Platelet model (`pipeline/platelets.py`, run by `preliminary.py`)
+
+Platelets are tracked as particles in the computed (pulsatile Carreau) blood flow. The model is one-way coupled: the flow moves the platelets, but platelets don't change the flow. Kinetics follow the continuum platelet-deposition model of **Sorensen et al. 1999** (*Ann Biomed Eng* 27:436–448), converted to particle form. The same Lagrangian approach was used by Longest & Kleinstreuer 2003 (*J Biomech* 36:421).
+
+| Piece | Model | Values |
+|---|---|---|
+| Transport | dx = u dt + √(2D dt)·ξ | u from the CFD |
+| Diffusivity | Shear-enhanced by red-cell collisions: D = D_B + 0.15·a²·Hct·(1−Hct)^0.8·γ̇ (Zydney & Colton 1988) | D_B = 1.58e-13 m²/s, a = 4.2 µm, Hct = 0.40 |
+| Platelets | Concentration and size | 250,000 /µL, 3 µm diameter |
+| Adhesion to struts | First-order surface reaction J = k·C. For a particle in the reaction layer δ, the chance per step is 1 − exp(−k·dt/δ) | k_rs = 3.7e-6 m/s (resting), k_as = 4.6e-5 m/s (activated), δ = 3 µm |
+| Activation | A free platelet that passes within 10 µm of a deposited platelet becomes activated. This is a **simplified** stand-in for Sorensen's ADP/TxA2 agonist transport. | |
+| Aggregation | An activated platelet touching a deposited one binds with k_aa | k_aa = 4.6e-5 m/s |
+| Surfaces | Stent struts are reactive. The artery wall is intact endothelium and non-adhesive; set `artery_wall_reactive` to change this. | |
+| Parcels | Each particle represents N real platelets (printed in the output), so the true platelet flux is simulated | |
+
+Rate constants were measured on collagen. Treat them as an upper bound for a metal or polymer stent, and check them against Sorensen's Table 1 before quoting them.
+
+**Not modelled:**
+- red cells (beyond near-wall seeding)
+- agonist concentration fields
+- detachment and embolisation
+- thrombus feedback on the flow
+- shear-induced activation
+
+The simulated time is ~2 s, which shows the *initial* adhesion pattern. Real thrombus growth takes minutes.
+
 ## 4. Mesh presets and cost
 
 The cell size at the stent sets how many cells resolve a 43 µm denticle:
@@ -263,6 +295,7 @@ Values are on the artery wall under the stent unless noted. % = change vs. the b
 ```
 cfd/
 ├── run.py                    # orchestrator (CLI)
+├── preliminary.py            # 3 preliminary bare-stent simulations -> results/preliminary/
 ├── config/
 │   ├── experiment.json       # design matrix + physics + flow settings
 │   └── waveform_LAD_approx.csv
@@ -270,6 +303,8 @@ cfd/
 │   ├── geometry.py           # STL repair, sector crop, denticle generator, lumen surface
 │   ├── case.py               # OpenFOAM dictionaries (mesh, BCs, Carreau, solver, function objects)
 │   ├── waveform.py           # inlet waveform loading/rescaling
+│   ├── animate.py            # flow GIFs + per-snapshot data for pulsatile cases
+│   ├── platelets.py          # Lagrangian platelet adhesion/aggregation model
 │   ├── preview.py            # geometry_out/preview.png: denticle layout of every design
 │   └── post.py               # TAWSS/OSI/RRT, recirculation, maps, comparison plots
 ├── geometry_out/             # cleaned stent STL files (generated)
