@@ -1,0 +1,121 @@
+{
+  "_comment": "DentiFlow CFD experiment. Lengths in mm unless noted; denticle params in micrometres. Paths are relative to the cfd/ folder.",
+  "stent_stl": "../stent fr.stl",
+  "window": {
+    "x0": 1.253,
+    "x1": 3.76,
+    "theta0_deg": -20.0,
+    "theta1_deg": 100.0
+  },
+  "domain": {
+    "radius": 1.59,
+    "l_in": 1.0,
+    "l_out": 6.0
+  },
+  "physics": {
+    "rho": 1060.0,
+    "mu0": 0.056,
+    "mu_inf": 0.00345,
+    "lam": 3.313,
+    "n": 0.3568,
+    "newtonian": false
+  },
+  "inlet": {
+    "waveform_csv": "config/waveform_LAD_approx.csv",
+    "period_s": 0.9,
+    "mean_mL_min": 42.2,
+    "peak_mL_min": 79.1,
+    "steady_flow": "mean"
+  },
+  "pulsatile": {
+    "n_cycles": 2,
+    "max_co": 1.0,
+    "snapshots_per_cycle": 10
+  },
+  "steady": {
+    "n_iter": 1500
+  },
+  "designs": [
+    {
+      "name": "validation_poiseuille",
+      "type": "empty",
+      "physics": {
+        "newtonian": true
+      },
+      "description": "VALIDATION: empty vessel, Newtonian blood; compare WSS and pressure drop with the exact Poiseuille solution (steady mode only)"
+    },
+    {
+      "name": "bare",
+      "type": "bare",
+      "description": "CONTROL: untextured stent sector (stent fr.stl)"
+    },
+    {
+      "name": "student_sector",
+      "type": "import",
+      "stl": "../cad models/stent with just dermal dentciles {1}/stent_denticle_CFD_sector.zip",
+      "description": "Sanhita's own denticle-coated sector, cleaned"
+    },
+    {
+      "name": "D1_baseline",
+      "type": "parametric",
+      "params": {},
+      "description": "parametric denticles matched to Sanhita's: 100x70x43 um, 85 um spacing, 3 ridges, along strut"
+    },
+    {
+      "name": "D2_tall",
+      "type": "parametric",
+      "params": {
+        "height_um": 65
+      },
+      "description": "height 65 um"
+    },
+    {
+      "name": "D3_short",
+      "type": "parametric",
+      "params": {
+        "height_um": 25
+      },
+      "description": "height 25 um"
+    },
+    {
+      "name": "D4_dense",
+      "type": "parametric",
+      "params": {
+        "spacing_um": 65
+      },
+      "description": "spacing 65 um (overlapping rows)"
+    },
+    {
+      "name": "D5_sparse",
+      "type": "parametric",
+      "params": {
+        "spacing_um": 150
+      },
+      "description": "spacing 150 um"
+    },
+    {
+      "name": "D6_smooth",
+      "type": "parametric",
+      "params": {
+        "ridge_depth": 0.0
+      },
+      "description": "no riblets (smooth crown)"
+    },
+    {
+      "name": "D7_flow_aligned",
+      "type": "parametric",
+      "params": {
+        "orientation": "flow"
+      },
+      "description": "denticles aligned with the vessel axis instead of the strut"
+    },
+    {
+      "name": "D8_reversed",
+      "type": "parametric",
+      "params": {
+        "orientation": "reverse"
+      },
+      "description": "denticles pointing upstream (negative control for orientation)"
+    }
+  ]
+}

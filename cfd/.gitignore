@@ -1,0 +1,7 @@
+# OpenFOAM cases are large and fully reproducible from the config
+runs/
+geometry_out/_unzipped/
+__pycache__/
+*.pyc
+# stent STL files are regenerated in seconds with: python3 run.py --geometry-only
+geometry_out/*.stl
