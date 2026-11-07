@@ -1,0 +1,23 @@
+{
+  "design": {
+    "name": "D3_short",
+    "type": "parametric",
+    "params": {
+      "height_um": 25
+    },
+    "description": "height 25 um"
+  },
+  "triangles": 218626,
+  "watertight": true,
+  "volume_mm3": 0.1465927959805601,
+  "area_mm2": 6.220043401775372,
+  "x_range": [
+    1.253000020980835,
+    3.759999990463257
+  ],
+  "r_min_mm": 1.4756973850317343,
+  "r_max_mm": 1.6006049350860305,
+  "max_protrusion_um": 24.30261496826569,
+  "n_denticles": 174,
+  "fragments_removed": 0
+}

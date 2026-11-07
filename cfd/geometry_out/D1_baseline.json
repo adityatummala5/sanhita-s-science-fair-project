@@ -1,0 +1,21 @@
+{
+  "design": {
+    "name": "D1_baseline",
+    "type": "parametric",
+    "params": {},
+    "description": "parametric denticles matched to Sanhita's: 100x70x43 um, 85 um spacing, 3 ridges, along strut"
+  },
+  "triangles": 218636,
+  "watertight": true,
+  "volume_mm3": 0.15514206273158396,
+  "area_mm2": 6.743351027985082,
+  "x_range": [
+    1.253000020980835,
+    3.759999990463257
+  ],
+  "r_min_mm": 1.4581995612030205,
+  "r_max_mm": 1.6006049350860305,
+  "max_protrusion_um": 41.80043879697948,
+  "n_denticles": 174,
+  "fragments_removed": 0
+}

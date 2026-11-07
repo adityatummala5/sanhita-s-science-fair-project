@@ -1,0 +1,21 @@
+{
+  "design": {
+    "name": "student_sector",
+    "type": "import",
+    "stl": "../cad models/stent with just dermal dentciles {1}/stent_denticle_CFD_sector.zip",
+    "description": "Sanhita's own denticle-coated sector, cleaned"
+  },
+  "triangles": 392246,
+  "watertight": true,
+  "volume_mm3": 0.14832897718899266,
+  "area_mm2": 7.321002749042931,
+  "x_range": [
+    1.2533999681472778,
+    3.760200023651123
+  ],
+  "r_min_mm": 1.4572667957345278,
+  "r_max_mm": 1.6006049350860305,
+  "max_protrusion_um": 42.733204265472224,
+  "source": "/home/user/sanhita-s-science-fair-project/cfd/geometry_out/_unzipped/stent_denticle_CFD_sector.stl",
+  "fragments_removed": 3
+}

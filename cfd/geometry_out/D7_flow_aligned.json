@@ -1,0 +1,23 @@
+{
+  "design": {
+    "name": "D7_flow_aligned",
+    "type": "parametric",
+    "params": {
+      "orientation": "flow"
+    },
+    "description": "denticles aligned with the vessel axis instead of the strut"
+  },
+  "triangles": 228850,
+  "watertight": true,
+  "volume_mm3": 0.1555476826568817,
+  "area_mm2": 6.832040422060026,
+  "x_range": [
+    1.253000020980835,
+    3.759999990463257
+  ],
+  "r_min_mm": 1.4581995539817612,
+  "r_max_mm": 1.6006049350860305,
+  "max_protrusion_um": 41.800446018238844,
+  "n_denticles": 174,
+  "fragments_removed": 0
+}

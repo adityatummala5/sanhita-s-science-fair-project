@@ -1,0 +1,23 @@
+{
+  "design": {
+    "name": "D6_smooth",
+    "type": "parametric",
+    "params": {
+      "ridge_depth": 0.0
+    },
+    "description": "no riblets (smooth crown)"
+  },
+  "triangles": 217334,
+  "watertight": true,
+  "volume_mm3": 0.15916602397774754,
+  "area_mm2": 6.607391224506298,
+  "x_range": [
+    1.253000020980835,
+    3.759999990463257
+  ],
+  "r_min_mm": 1.4570743982282708,
+  "r_max_mm": 1.6006049350860305,
+  "max_protrusion_um": 42.92560177172922,
+  "n_denticles": 174,
+  "fragments_removed": 0
+}

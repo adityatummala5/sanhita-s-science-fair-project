@@ -1,0 +1,23 @@
+{
+  "design": {
+    "name": "D8_reversed",
+    "type": "parametric",
+    "params": {
+      "orientation": "reverse"
+    },
+    "description": "denticles pointing upstream (negative control for orientation)"
+  },
+  "triangles": 218550,
+  "watertight": true,
+  "volume_mm3": 0.15514195316282972,
+  "area_mm2": 6.742665212579308,
+  "x_range": [
+    1.253000020980835,
+    3.759999990463257
+  ],
+  "r_min_mm": 1.458199552505623,
+  "r_max_mm": 1.6006049350860305,
+  "max_protrusion_um": 41.80044749437695,
+  "n_denticles": 174,
+  "fragments_removed": 0
+}

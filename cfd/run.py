@@ -287,6 +287,8 @@ def main():
         json.dump(m, open(os.path.join(cdir, "metrics.json"), "w"), indent=2)
         print(f"    done in {(time.time() - t0) / 60:.1f} min")
 
+    import preview  # noqa: E402
+    preview.preview(os.path.join(HERE, "geometry_out"), os.path.join(HERE, "geometry_out", "preview.png"))
     if not args.geometry_only:
         import post  # noqa: E402
         post.summarise(run_root, res_root, dom)

@@ -1,0 +1,23 @@
+{
+  "design": {
+    "name": "D4_dense",
+    "type": "parametric",
+    "params": {
+      "spacing_um": 65
+    },
+    "description": "spacing 65 um (overlapping rows)"
+  },
+  "triangles": 242132,
+  "watertight": true,
+  "volume_mm3": 0.15851566294261055,
+  "area_mm2": 6.7750572504938695,
+  "x_range": [
+    1.253000020980835,
+    3.759999990463257
+  ],
+  "r_min_mm": 1.4581995601472988,
+  "r_max_mm": 1.6006049350860305,
+  "max_protrusion_um": 41.80043985270121,
+  "n_denticles": 228,
+  "fragments_removed": 0
+}

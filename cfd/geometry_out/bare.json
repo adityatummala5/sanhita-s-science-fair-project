@@ -1,0 +1,20 @@
+{
+  "design": {
+    "name": "bare",
+    "type": "bare",
+    "description": "CONTROL: untextured stent sector (stent fr.stl)"
+  },
+  "triangles": 5282,
+  "watertight": true,
+  "volume_mm3": 0.13453037313870156,
+  "area_mm2": 5.776623384436628,
+  "x_range": [
+    1.253000020980835,
+    3.759999990463257
+  ],
+  "r_min_mm": 1.4999999433721458,
+  "r_max_mm": 1.6006049350860305,
+  "max_protrusion_um": 5.662785418358851e-05,
+  "source": "/home/user/sanhita-s-science-fair-project/stent fr.stl",
+  "fragments_removed": 0
+}

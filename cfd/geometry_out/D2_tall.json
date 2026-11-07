@@ -1,0 +1,23 @@
+{
+  "design": {
+    "name": "D2_tall",
+    "type": "parametric",
+    "params": {
+      "height_um": 65
+    },
+    "description": "height 65 um"
+  },
+  "triangles": 218638,
+  "watertight": true,
+  "volume_mm3": 0.16550372455940193,
+  "area_mm2": 7.439347386629411,
+  "x_range": [
+    1.253000020980835,
+    3.759999990463257
+  ],
+  "r_min_mm": 1.436813323719283,
+  "r_max_mm": 1.6006049350860305,
+  "max_protrusion_um": 63.186676280716945,
+  "n_denticles": 174,
+  "fragments_removed": 0
+}

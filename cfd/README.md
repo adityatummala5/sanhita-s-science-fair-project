@@ -193,20 +193,61 @@ The cell size at the stent sets how many cells resolve a 43 µm denticle:
 | Preset | Background cell | Cell at artery wall | Cell at stent | Cells across a 43 µm denticle | Typical cells |
 |---|---|---|---|---|---|
 | coarse | 80 µm | 40 µm | 10 µm | ~4 | 0.35 M (bare) |
-| medium | 60 µm | 30 µm | 7.5 µm | ~6 | ~1 M |
-| fine | 50 µm | 12.5 µm | 3.1 µm | ~14 | several M |
+| medium | 60 µm | 30 µm | 7.5 µm | ~6 | ~1 M (estimate, not yet run) |
+| fine | 50 µm | 12.5 µm | 3.1 µm | ~14 | several M (estimate, not yet run) |
 
 Measured on a 4-core cloud machine, coarse bare stent:
 - snappyHexMesh: 83 s
 - steady solve: 4 min (converged in 568 iterations)
 
-Pulsatile runs need thousands of time steps per cycle, so expect hours per design on a laptop. A university or lab workstation is a better fit for the final runs.
+Pulsatile, coarse preset: about 1,640 time steps per cardiac cycle (Δt ≈ 0.55 ms at Courant number 1), or **~22 min per cycle**. That is ~45 min per design for the default 2 cycles. Finer meshes cost much more: expect hours per design on a laptop. A university or lab workstation is a better fit for the final runs.
 
 **Mesh-independence:** run `bare` and `D1_baseline` at coarse, medium and fine. Use the coarsest preset whose key metrics change by less than ~5% at the next finer level. Report this in the project; judges will ask.
 
 ---
 
-## 5. Assumptions and limitations (state these in the write-up)
+## 5. Results so far: coarse mesh, steady mean flow (PRELIMINARY)
+
+Run on 2026-11-07 with `python3 run.py --mode steady --preset coarse`. The full table is in `results/coarse-steady/metrics.csv`, with figures alongside it.
+
+**Validation:** in the empty vessel with Newtonian blood, the simulated wall shear stress was 0.760 Pa against 0.780 Pa exact (**−2.5%**). The pressure drop was 9.13 Pa against 9.32 Pa (**−2.0%**).
+
+**Mesh quality:** `checkMesh` flags 10–15 of ~1 M faces as highly skewed (max 15.8, against its warning level of 4). This happens in the **bare** control too, so the denticles do not cause it. Every other check passes. All runs converged and conserve mass to within 1e-6 %.
+
+Values are on the artery wall under the stent unless noted. % = change vs. the bare control.
+
+| Design | Wall TAWSS (Pa) | Wall area < 0.4 Pa | Wall RRT (1/Pa) | Stent area < 0.4 Pa |
+|---|---|---|---|---|
+| **bare (control)** | 0.601 | 23.6 % | 3.93 | 39.9 % |
+| student_sector | 0.564 (−6%) | 27.5 % (+17%) | 5.41 (+38%) | 46.9 % (+18%) |
+| D1_baseline | 0.567 (−6%) | 27.2 % (+16%) | 5.46 (+39%) | 40.8 % (+2%) |
+| D2_tall (65 µm) | 0.541 (−10%) | 29.9 % (+27%) | 6.65 (+69%) | 43.7 % (+10%) |
+| D3_short (25 µm) | 0.585 (−3%) | 25.1 % (+7%) | 4.65 (+18%) | 39.1 % (−2%) |
+| D4_dense | 0.564 (−6%) | 27.6 % (+17%) | 5.53 (+41%) | 39.8 % (0%) |
+| D5_sparse | 0.578 (−4%) | 26.0 % (+10%) | 4.83 (+23%) | 39.4 % (−1%) |
+| D6_smooth | 0.562 (−6%) | 27.7 % (+18%) | 5.80 (+48%) | 42.4 % (+6%) |
+| D7_flow_aligned | 0.566 (−6%) | 27.4 % (+16%) | 5.46 (+39%) | 40.3 % (+1%) |
+| D8_reversed | 0.567 (−6%) | 27.3 % (+16%) | 5.44 (+38%) | 40.8 % (+2%) |
+
+**What this says so far:**
+- **Every denticle design makes the flow worse than the bare stent at this stage.** The artery wall under the stent has lower WSS and a larger low-WSS area.
+- **Height is the dominant variable.** The design ranking follows denticle height: tall is worst, short is closest to bare. Sparser denticles are also closer to bare.
+  - This matches the clinical literature, where thicker struts give worse hemodynamics and more restenosis. Adding denticles *on top* of a 90 µm strut makes the strut effectively 25–65 µm taller.
+- **Riblets help slightly.** D1 with riblets beats the smooth D6, particularly on the stent surface.
+- **Orientation (D1, D7, D8) makes almost no difference** at this resolution.
+- **Sanhita's design is about as good as D1 on the artery wall**, but it has more low-shear area on the stent itself. That is likely because of the deeper grooves in its crown shape.
+
+**How far these results can be trusted:**
+- The mesh is coarse (~4 cells across a denticle).
+- The flow is steady, so there is no OSI.
+- The waveform is still the approximate one.
+- Do **not** report these as final. Next:
+  1. Run the mesh-independence check.
+  2. Run pulsatile flow with the digitised waveform.
+
+**Suggested experiment fix.** As designed, "denticles" is confounded with "taller strut". Add a **height-matched control**: a bare stent with struts thickened by the denticle height. Also consider denticles that are **recessed** into the strut (same total height as bare). That separates the effect of the texture from the effect of extra height, and is the comparison that actually tests the hypothesis.
+
+## 6. Assumptions and limitations (state these in the write-up)
 
 1. **2-ring, 120° sector with symmetry sides.** The real stent is periodic every 120°, and periodic (cyclic) sides would be exact. Symmetry planes are a close, commonly used approximation.
 2. **Rigid, straight, healthy artery.** There is no wall motion, curvature, plaque, or stent expansion and deformation.
@@ -217,7 +258,7 @@ Pulsatile runs need thousands of time steps per cycle, so expect hours per desig
 
 ---
 
-## 6. File map
+## 7. File map
 
 ```
 cfd/
@@ -229,6 +270,7 @@ cfd/
 │   ├── geometry.py           # STL repair, sector crop, denticle generator, lumen surface
 │   ├── case.py               # OpenFOAM dictionaries (mesh, BCs, Carreau, solver, function objects)
 │   ├── waveform.py           # inlet waveform loading/rescaling
+│   ├── preview.py            # geometry_out/preview.png: denticle layout of every design
 │   └── post.py               # TAWSS/OSI/RRT, recirculation, maps, comparison plots
 ├── geometry_out/             # cleaned stent STL files (generated)
 ├── runs/                     # OpenFOAM cases (generated, git-ignored)

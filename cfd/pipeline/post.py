@@ -206,8 +206,12 @@ def summarise(run_root: str, res_root: str, dom):
         w.writeheader()
         for r in rows:
             w.writerow(r)
+    rows = [r for r in rows if not r["design"].startswith("validation")]
+    rows.sort(key=lambda r: (r["design"] != "bare", r["design"] != "student_sector", r["design"]))
+    if not rows:
+        return
     names = [r["design"] for r in rows]
-    metrics = [(k, t) for k, t in KEY_METRICS if any(r.get(k) is not None for r in rows)]
+    metrics = [(k, t) for k, t in KEY_METRICS if any(r.get(k) not in (None, 0, 0.0) for r in rows)]
     n = len(metrics)
     fig, axs = plt.subplots(2, (n + 1) // 2, figsize=(5.5 * ((n + 1) // 2), 9))
     for ax, (k, title) in zip(axs.ravel(), metrics):
