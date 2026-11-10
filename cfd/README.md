@@ -87,6 +87,12 @@ python3 run.py --mode pulsatile --preset medium --np 8
 python3 preliminary.py
 ```
 
+6. Platelet comparison: denticle stents vs bare stents with the same strut thickness. This writes GIFs and data to `results/platelet_comparison/`; see the README there. It takes about 7 h on 4 cores:
+
+```bash
+python3 compare_platelets.py
+```
+
 Useful options:
 
 | Option | Meaning |
@@ -147,6 +153,7 @@ The default experiment is **one-factor-at-a-time** around the baseline denticle:
 |---|---|---|
 | `validation_poiseuille` | No stent, Newtonian blood | Proves the solver gives the exact answer |
 | `bare` | Untextured stent | **Control** |
+| `bare_thick124` / `bare_thick143` | Bare stent with 124 / 143 µm struts (100 µm + denticle height) | **Height-matched controls** for D3 and for Sanhita's sector / D4 |
 | `student_sector` | Sanhita's own denticle CAD | Her design |
 | `D1_baseline` | Parametric, matched to hers | Baseline for the sweep |
 | `D2_tall` / `D3_short` | Height 65 / 25 µm | Effect of height |
@@ -296,6 +303,7 @@ Values are on the artery wall under the stent unless noted. % = change vs. the b
 cfd/
 ├── run.py                    # orchestrator (CLI)
 ├── preliminary.py            # 3 preliminary bare-stent simulations -> results/preliminary/
+├── compare_platelets.py      # platelets: denticle stents vs height-matched bare -> results/platelet_comparison/
 ├── config/
 │   ├── experiment.json       # design matrix + physics + flow settings
 │   └── waveform_LAD_approx.csv

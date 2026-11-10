@@ -58,6 +58,18 @@
       "description": "bare stent, Newtonian fluid with blood's high-shear viscosity (3.5 mPa s) - compare with Carreau 'bare'"
     },
     {
+      "name": "bare_thick143",
+      "type": "thick",
+      "added_um": 42.7,
+      "description": "CONTROL for student_sector and D4_dense: bare stent, struts 143 um thick (100 + 42.7 um)"
+    },
+    {
+      "name": "bare_thick124",
+      "type": "thick",
+      "added_um": 24.3,
+      "description": "CONTROL for D3_short: bare stent, struts 124 um thick (100 + 24.3 um = D3 denticle height)"
+    },
+    {
       "name": "student_sector",
       "type": "import",
       "stl": "../cad models/stent with just dermal dentciles {1}/stent_denticle_CFD_sector.zip",

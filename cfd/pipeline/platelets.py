@@ -68,7 +68,7 @@ class PlateletParams:
     activation_radius_um: float = 10.0         # simplification of agonist release (see docstring)
     p_inf_per_m2: float = 7.0e10               # max surface coverage (Sorensen 1999)
     artery_wall_reactive: bool = False
-    seed_r_min_mm: float = 1.44                # only platelets within ~50 um of strut tops can reach them
+    seed_r_min_mm: float = 1.40                # >= 50 um beyond the tallest strut/denticle tip (r = 1.457)
     track_r_min_mm: float = 1.30
     seed_offset_mm: float = 0.5                # seed plane this far upstream of the stent
     track_end_mm: float = 1.5                  # stop tracking this far downstream of the stent

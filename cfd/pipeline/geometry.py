@@ -249,6 +249,21 @@ def bare_sector(stent_stl: str, win: Window) -> StentResult:
     return StentResult(tm, {"source": stent_stl, "fragments_removed": dropped})
 
 
+def thickened_sector(bare: StentResult, added_um: float) -> StentResult:
+    """Height-matched control: the same bare stent with every strut made
+    `added_um` thicker, by moving the luminal face radially inward. The
+    abluminal face (r = 1.60 mm, in the artery wall) and strut paths are unchanged."""
+    v = bare.mesh.vertices.copy()
+    r = np.hypot(v[:, 1], v[:, 2])
+    t = R_ABLUMINAL - R_LUMINAL
+    h = added_um / 1e3
+    r_new = R_ABLUMINAL - (R_ABLUMINAL - r) * (t + h) / t
+    v[:, 1:] *= (r_new / r)[:, None]
+    tm = trimesh.Trimesh(v, bare.mesh.faces.copy(), process=False)
+    assert tm.is_watertight
+    return StentResult(tm, {"strut_thickness_um": 1e3 * t + added_um, "added_um": added_um})
+
+
 def denticle_sector(bare: StentResult, p: DenticleParams, win: Window) -> StentResult:
     pl = place_denticles(bare.mesh, p, win)
     dent = build_denticles(pl, p)

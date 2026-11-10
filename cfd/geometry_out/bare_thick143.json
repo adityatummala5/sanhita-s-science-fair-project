@@ -1,0 +1,21 @@
+{
+  "design": {
+    "name": "bare_thick143",
+    "type": "thick",
+    "added_um": 42.7,
+    "description": "CONTROL for student_sector and D4_dense: bare stent, struts 143 um thick (100 + 42.7 um)"
+  },
+  "triangles": 5282,
+  "watertight": true,
+  "volume_mm3": 0.18925131119310298,
+  "area_mm2": 7.044718094860993,
+  "x_range": [
+    1.253000020980835,
+    3.759999990463257
+  ],
+  "r_min_mm": 1.457299919192052,
+  "r_max_mm": 1.6008632423677653,
+  "max_protrusion_um": 42.70008080794807,
+  "strut_thickness_um": 142.7000000000001,
+  "added_um": 42.7
+}

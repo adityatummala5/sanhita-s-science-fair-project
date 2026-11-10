@@ -122,6 +122,8 @@ def build_geometry(design: dict, cfg: dict, win: geo.Window, cache: dict) -> geo
         cache["bare"] = geo.bare_sector(rel(cfg["stent_stl"]), win)
     if kind == "bare":
         return cache["bare"]
+    if kind == "thick":
+        return geo.thickened_sector(cache["bare"], float(design["added_um"]))
     if kind == "parametric":
         p = geo.DenticleParams(**design.get("params", {}))
         return geo.denticle_sector(cache["bare"], p, win)
