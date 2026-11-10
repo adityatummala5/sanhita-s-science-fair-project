@@ -108,6 +108,8 @@ def _load(d):
         "platelets_passing_per_s": round(s["platelets_injected"] / s["simulated_time_s"]),
         "deposited_per_million_passing": round(1e6 * total / s["platelets_injected"], 1),
         "parcel_weight": round(w, 2),
+        "parcels_deposited": n_par,
+        "parcels_aggregated": sum(1 for r in rows if r["site"] == "aggregate"),
         "wall_TAWSS_Pa": round(f["wall_stented_TAWSS_mean_Pa"], 3),
         "wall_lowWSS_area_pct": round(f["wall_stented_lowWSS_area_pct"], 1),
         "wall_RRT_perPa": round(f["wall_stented_RRT_mean_perPa"], 2),
@@ -158,6 +160,10 @@ def stage_summary(cfg, dom):
                 pr[f"{k}_textured"] = a[k]
                 pr[f"{k}_control"] = b[k]
                 pr[f"{k}_change_pct"] = round(100 * (a[k] - b[k]) / b[k], 1) if b[k] else ""
+            # Poisson counting noise on the simulated parcels -> z-score of the difference
+            for k, n in (("platelets_total_deposited", "parcels_deposited"), ("platelets_aggregated", "parcels_aggregated")):
+                var = a[n] * a["parcel_weight"] ** 2 + b[n] * b["parcel_weight"] ** 2
+                pr[f"{k}_z_score"] = round((a[k] - b[k]) / math.sqrt(var), 1) if var else ""
             pair_rows.append(pr)
     with open(os.path.join(OUT, "pairwise_textured_vs_control.csv"), "w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(pair_rows[0]))
