@@ -168,9 +168,7 @@ def export_flow(cdir: str, out_dir: str, dom, rho: float, period: float, title: 
         speed = np.hypot(c["ux"], c["ur"])
         tp = ax2.tripcolor(c["sx"] * 1e3, c["sr"] * 1e3, c["tris"], speed, cmap="magma",
                            vmin=0, vmax=0.08, shading="gouraud", rasterized=True)
-        tri = mtri.Triangulation(c["sx"], c["sr"], c["tris"])   # struts are holes in this mesh
-        UX = mtri.LinearTriInterpolator(tri, c["ux"])(XG, RG).filled(np.nan)
-        UR = mtri.LinearTriInterpolator(tri, c["ur"])(XG, RG).filled(np.nan)
+        UX, UR = _slice_velocity_on_grid(c, XG, RG)
         try:
             ax2.streamplot(XG * 1e3, RG * 1e3, UX, UR, density=(4.0, 1.6), color="cyan",
                            linewidth=0.45, arrowsize=0.5)
@@ -187,6 +185,34 @@ def export_flow(cdir: str, out_dir: str, dom, rho: float, period: float, title: 
     save_gif(frames, os.path.join(out_dir, "flow.gif"), fps=fps)
     frames[int(np.argmax(qq))].save(os.path.join(out_dir, "frame_peak_flow.png"))
     return {"n_frames": len(frames), "times": [float(t) for t in times]}
+
+
+def _slice_velocity_on_grid(c, XG, RG, bridge_factor: float = 2.5):
+    """Interpolate the slice velocity onto the streamline grid. Uses the slice's own triangles
+    (struts stay holes). Some meshes (e.g. dense denticles) give overlapping triangles that
+    matplotlib rejects; then re-triangulate with Delaunay and mask the triangles that bridge a
+    hole (longest edge > bridge_factor x the local cell size of their corners)."""
+    try:
+        tri = mtri.Triangulation(c["sx"], c["sr"], c["tris"])
+        UX = mtri.LinearTriInterpolator(tri, c["ux"])(XG, RG).filled(np.nan)
+        UR = mtri.LinearTriInterpolator(tri, c["ur"])(XG, RG).filled(np.nan)
+        return UX, UR
+    except RuntimeError:
+        pass
+    x, r, t0 = c["sx"], c["sr"], c["tris"]
+
+    def edges(t):
+        e = [np.hypot(x[t[:, i]] - x[t[:, j]], r[t[:, i]] - r[t[:, j]]) for i, j in ((0, 1), (1, 2), (2, 0))]
+        return np.stack(e, 1)
+    e0 = edges(t0)
+    local = np.zeros(len(x))
+    np.maximum.at(local, t0.ravel(), np.repeat(e0.max(1), 3))
+    d = mtri.Triangulation(x, r)
+    td = d.triangles
+    d.set_mask(edges(td).max(1) > bridge_factor * local[td].max(1))
+    UX = mtri.LinearTriInterpolator(d, c["ux"])(XG, RG).filled(np.nan)
+    UR = mtri.LinearTriInterpolator(d, c["ur"])(XG, RG).filled(np.nan)
+    return UX, UR
 
 
 def _export_surface(r, t, out_dir, rho):
