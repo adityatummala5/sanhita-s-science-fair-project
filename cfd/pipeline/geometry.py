@@ -156,13 +156,15 @@ def denticle_local(p: DenticleParams) -> tuple[np.ndarray, np.ndarray]:
     return np.asarray(tm.vertices), np.asarray(tm.faces)
 
 
-def _luminal_polygon(stent: trimesh.Trimesh) -> Polygon:
-    """Unrolled (x, s = R*theta) outline of the strut luminal surface."""
+def _luminal_polygon(stent: trimesh.Trimesh, r_luminal: float | None = None) -> Polygon:
+    """Unrolled (x, s = R*theta) outline of the strut luminal surface (at r_luminal, default
+    R_LUMINAL; pass the inner radius for thickened struts)."""
+    r_lum = R_LUMINAL if r_luminal is None else r_luminal
     fc = stent.triangles_center
     rc = np.hypot(fc[:, 1], fc[:, 2])
     n = stent.face_normals
     radial = (n[:, 1] * fc[:, 1] + n[:, 2] * fc[:, 2]) / rc
-    sel = (np.abs(rc - R_LUMINAL) < 2e-3) & (radial < -0.98)
+    sel = (np.abs(rc - r_lum) < 2e-3) & (radial < -0.98)
     tri = stent.vertices[stent.faces[sel]]
     s = R_LUMINAL * np.arctan2(tri[..., 2], tri[..., 1])
     polys = [Polygon(np.c_[tri[k, :, 0], s[k]]) for k in range(len(tri))]

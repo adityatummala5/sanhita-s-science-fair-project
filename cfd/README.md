@@ -87,7 +87,7 @@ python3 run.py --mode pulsatile --preset medium --np 8
 python3 preliminary.py
 ```
 
-6. Platelet comparison: denticle stents vs bare stents with the same strut thickness. This writes GIFs and data to `results/platelet_comparison/`; see the README there. It takes about 7 h on 4 cores:
+6. Platelet comparison: denticle stents vs bare stents with the same strut thickness. This writes GIFs and data to `results/platelet_comparison/`; see the README there. It takes about 8 h of CFD on 3 cores plus ~1 h of platelets per design on 1 core. The two overlap if you run `--stage cfd` and `--stage platelets --wait` side by side. `--stage summary` rebuilds only the tables and GIFs:
 
 ```bash
 python3 compare_platelets.py
@@ -285,6 +285,15 @@ Values are on the artery wall under the stent unless noted. % = change vs. the b
   2. Run pulsatile flow with the digitised waveform.
 
 **Suggested experiment fix.** As designed, "denticles" is confounded with "taller strut". Add a **height-matched control**: a bare stent with struts thickened by the denticle height. Also consider denticles that are **recessed** into the strut (same total height as bare). That separates the effect of the texture from the effect of extra height, and is the comparison that actually tests the hypothesis.
+
+### Platelet comparison vs height-matched controls (pulsatile, coarse mesh, PRELIMINARY)
+
+These runs, made on 2026-11-10, add the height-matched controls suggested above. The full results and caveats are in `results/platelet_comparison/README.md`. In short:
+- **Denticles beat a strut thickened by the same height** on every artery-wall metric: 14–17% less low-WSS area. They are still worse than the original 100 µm stent.
+- **The parametric denticles (D3, D4) leave platelet adhesion statistically unchanged** compared with the 100 µm stent (±8%, within counting noise). They are 14–24% lower than their thick controls.
+- **Sanhita's CAD denticles roughly double adhesion** compared with the 143 µm control (+91%), and give 2.7× the adhesion of the 100 µm stent. D4 has the same height and goes the other way, so the denticle *shape* matters. Her crowns have undercuts and steeper upstream faces, which the parametric ones lack.
+- **Aggregation on her design is dominated by two runaway clusters.** Treat it as qualitative.
+- **The next step is a medium-mesh repeat** of `student_sector`, `D4_dense` and `bare`, with several seeds.
 
 ## 6. Assumptions and limitations (state these in the write-up)
 

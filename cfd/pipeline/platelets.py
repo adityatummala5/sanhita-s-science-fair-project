@@ -357,7 +357,13 @@ def _stent_outline(stl, dom):
     import sys
     sys.path.insert(0, os.path.dirname(__file__))
     from geometry import _luminal_polygon
-    poly = _luminal_polygon(trimesh.load(stl))
+    m = trimesh.load(stl)
+    poly = _luminal_polygon(m)
+    if poly.is_empty:    # thickened struts: luminal face sits inside R_LUMINAL
+        fc = m.triangles_center
+        rc = np.hypot(fc[:, 1], fc[:, 2])
+        radial = (m.face_normals[:, 1] * fc[:, 1] + m.face_normals[:, 2] * fc[:, 2]) / rc
+        poly = _luminal_polygon(m, float(rc[radial < -0.98].min()))
     geoms = [poly] if poly.geom_type == "Polygon" else list(poly.geoms)
     return [np.asarray(g.exterior.coords) for g in geoms]
 
@@ -511,3 +517,26 @@ def _deposit_map(recs, weight, dom, stl, path, t_end):
     plt.tight_layout()
     plt.savefig(path, dpi=120)
     plt.close(fig)
+
+
+def rerender(out_dir, dom, stent_stl, period, title):
+    """Redraw platelets.gif, deposition_map.png and deposition_growth.gif from a finished run
+    (frames.npz + adhered_platelets.csv) without re-running the simulation."""
+    z = np.load(os.path.join(out_dir, "frames.npz"), allow_pickle=True)
+    series = json.loads(str(z["series"]))
+    rows = list(csv.DictReader(open(os.path.join(out_dir, "adhered_platelets.csv"))))
+    weight = float(rows[0]["platelets_represented"]) if rows else 1.0
+    recs = [(int(r["parcel_id"]), float(r["time_s"]), float(r["x_mm"]), float(r["y_mm"]), float(r["z_mm"]),
+             r["site"], int(r["was_activated"])) for r in rows]
+    rt = np.array([r[1] for r in recs])
+    rx = np.array([r[2:5] for r in recs]).reshape(-1, 3)
+    rk = [r[5] for r in recs]
+    frames = []
+    for t, P, S in zip(z["t"], z["free_pos"], z["free_state"]):
+        m = rt <= t + 1e-12
+        frames.append((float(t), np.asarray(P), np.asarray(S), rx[m], [k for k, mm in zip(rk, m) if mm]))
+    t_end = float(series[-1]["time_s"])
+    _gif(frames, series, weight, dom, stent_stl, period, os.path.join(out_dir, "platelets.gif"), title)
+    _deposit_map(recs, weight, dom, stent_stl, os.path.join(out_dir, "deposition_map.png"), t_end)
+    growth_gif(os.path.join(out_dir, "adhered_platelets.csv"), dom, stent_stl,
+               os.path.join(out_dir, "deposition_growth.gif"), t_end)

@@ -110,6 +110,8 @@ def _load(d):
         "parcel_weight": round(w, 2),
         "parcels_deposited": n_par,
         "parcels_aggregated": sum(1 for r in rows if r["site"] == "aggregate"),
+        "parcels_adhered": sum(1 for r in rows if r["site"] != "aggregate"),
+        **_cluster_stats(rows, w),
         "wall_TAWSS_Pa": round(f["wall_stented_TAWSS_mean_Pa"], 3),
         "wall_lowWSS_area_pct": round(f["wall_stented_lowWSS_area_pct"], 1),
         "wall_RRT_perPa": round(f["wall_stented_RRT_mean_perPa"], 2),
@@ -118,6 +120,20 @@ def _load(d):
         "recirc_volume_mm3": round(f["recirc_volume_mm3"], 5),
         "pressure_drop_Pa": round(f["pressure_drop_Pa"], 2),
     }
+
+
+def _cluster_stats(rows, w, link_mm=0.012):
+    """Aggregates grouped into clusters (single linkage, 12 um ~ activation radius + platelet).
+    A few runaway clusters can dominate the aggregated count, so report them separately."""
+    import numpy as np
+    from scipy.cluster.hierarchy import fcluster, linkage
+    X = np.array([[float(r[k]) for k in ("x_mm", "y_mm", "z_mm")] for r in rows if r["site"] == "aggregate"])
+    if len(X) < 2:
+        return {"aggregate_clusters": len(X), "largest_aggregate_cluster_platelets": round(len(X) * w),
+                "aggregated_outside_two_largest_clusters": round(len(X) * w)}
+    sizes = np.sort(np.bincount(fcluster(linkage(X, "single"), link_mm, "distance"))[1:])[::-1]
+    return {"aggregate_clusters": int(len(sizes)), "largest_aggregate_cluster_platelets": round(sizes[0] * w),
+            "aggregated_outside_two_largest_clusters": round(sizes[2:].sum() * w)}
 
 
 def _fix_timeseries(cfg, dom):
@@ -155,13 +171,15 @@ def stage_summary(cfg, dom):
             a, b = rows[tex], rows[ctl]
             pr = {"textured": tex, "control": ctl}
             for k in ("platelets_total_deposited", "platelets_adhered_to_stent", "platelets_aggregated",
+                      "aggregated_outside_two_largest_clusters",
                       "deposit_density_per_mm2", "wall_TAWSS_Pa", "wall_lowWSS_area_pct", "stent_TAWSS_Pa",
                       "stent_lowWSS_area_pct", "recirc_volume_mm3", "pressure_drop_Pa"):
                 pr[f"{k}_textured"] = a[k]
                 pr[f"{k}_control"] = b[k]
                 pr[f"{k}_change_pct"] = round(100 * (a[k] - b[k]) / b[k], 1) if b[k] else ""
             # Poisson counting noise on the simulated parcels -> z-score of the difference
-            for k, n in (("platelets_total_deposited", "parcels_deposited"), ("platelets_aggregated", "parcels_aggregated")):
+            for k, n in (("platelets_total_deposited", "parcels_deposited"), ("platelets_adhered_to_stent", "parcels_adhered"),
+                         ("platelets_aggregated", "parcels_aggregated")):
                 var = a[n] * a["parcel_weight"] ** 2 + b[n] * b["parcel_weight"] ** 2
                 pr[f"{k}_z_score"] = round((a[k] - b[k]) / math.sqrt(var), 1) if var else ""
             pair_rows.append(pr)
