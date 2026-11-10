@@ -177,7 +177,8 @@ class Surface:
 
 
 # ---------------------------------------------------------------------------
-def simulate(cdir, times, period, dom, stent_stl, out_dir, p: PlateletParams, title="bare stent"):
+def simulate(cdir, times, period, dom, stent_stl, out_dir, p: PlateletParams, title="bare stent",
+             timeseries_name: str = "timeseries.csv"):
     os.makedirs(out_dir, exist_ok=True)
     rng = np.random.default_rng(p.seed)
     ff = FlowField(cdir, times, period, dom, p)
@@ -315,7 +316,7 @@ def simulate(cdir, times, period, dom, stent_stl, out_dir, p: PlateletParams, ti
         for rec in ads_rec:
             w.writerow([rec[0], f"{weight:.2f}", f"{rec[1]:.5f}", f"{rec[2]:.5f}", f"{rec[3]:.5f}",
                         f"{rec[4]:.5f}", rec[5], rec[6]])
-    with open(os.path.join(out_dir, "timeseries.csv"), "w", newline="") as fh:
+    with open(os.path.join(out_dir, timeseries_name), "w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(series[0]))
         w.writeheader()
         w.writerows(series)

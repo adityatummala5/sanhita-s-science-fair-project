@@ -72,12 +72,14 @@ def stage_platelets(cfg, dom, wait):
         while wait and not os.path.exists(os.path.join(cdir, "metrics.json")):
             time.sleep(30)
         print(f"=== {d}: flow export + platelet simulation")
-        animate.export_flow(cdir, out, dom, cfg["physics"]["rho"], period, LABEL[d])
+        animate.export_flow(cdir, out, dom, cfg["physics"]["rho"], period, LABEL[d],
+                            timeseries_name="flow_timeseries.csv")
         json.dump(json.load(open(os.path.join(cdir, "metrics.json"))), open(os.path.join(out, "flow_metrics.json"), "w"),
                   indent=2)
         times = animate.snapshot_times(cdir, period)
         pl.simulate(cdir, times, period, dom, os.path.join(HERE, "geometry_out", f"{d}.stl"), out,
-                    pl.PlateletParams(n_cycles=2.0), title=LABEL[d])
+                    pl.PlateletParams(n_cycles=2.0), title=LABEL[d],
+                    timeseries_name="platelet_timeseries.csv")
         pl.growth_gif(os.path.join(out, "adhered_platelets.csv"), dom, os.path.join(HERE, "geometry_out", f"{d}.stl"),
                       os.path.join(out, "deposition_growth.gif"), 2 * period)
 
@@ -116,7 +118,23 @@ def _load(d):
     }
 
 
+def _fix_timeseries(cfg, dom):
+    """Older runs wrote the flow and platelet time series to the same timeseries.csv (the platelet
+    one won). Rename the platelet one and regenerate the flow one (data only, no GIF)."""
+    import animate
+    for d in DESIGNS:
+        out = os.path.join(OUT, d)
+        old = os.path.join(out, "timeseries.csv")
+        if os.path.exists(old) and "free_parcels" in open(old).readline():
+            os.replace(old, os.path.join(out, "platelet_timeseries.csv"))
+        if not os.path.exists(os.path.join(out, "flow_timeseries.csv")):
+            print(f"{d}: regenerating flow_timeseries.csv")
+            animate.export_flow(os.path.join(RUN_ROOT, d), out, dom, cfg["physics"]["rho"], cfg["inlet"]["period_s"],
+                                LABEL[d], timeseries_name="flow_timeseries.csv", make_gif=False)
+
+
 def stage_summary(cfg, dom):
+    _fix_timeseries(cfg, dom)
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt

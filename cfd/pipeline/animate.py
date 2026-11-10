@@ -63,8 +63,9 @@ def _fig_to_image(fig) -> Image.Image:
 
 
 def export_flow(cdir: str, out_dir: str, dom, rho: float, period: float, title: str,
-                slice_theta_deg: float = 30.0, fps: float = 6) -> dict:
-    """Write timeseries.csv, surface_tawss_osi_rrt.csv and flow.gif into out_dir."""
+                slice_theta_deg: float = 30.0, fps: float = 6, timeseries_name: str = "timeseries.csv",
+                make_gif: bool = True) -> dict:
+    """Write <timeseries_name>, surface_tawss_osi_rrt.csv and (if make_gif) flow.gif into out_dir."""
     os.makedirs(out_dir, exist_ok=True)
     r = _reader(cdir)
     times = snapshot_times(cdir, period)
@@ -105,6 +106,8 @@ def export_flow(cdir: str, out_dir: str, dom, rho: float, period: float, title: 
             "recirc_volume_mm3": float(cv[rev].sum() * 1e9),
             "max_velocity_m_s": float(np.linalg.norm(U, axis=1).max()),
         })
+        if not make_gif:
+            continue
         sl = vol.slice(normal=normal, origin=(0, 0, 0)).triangulate()
         sp = np.asarray(sl.points)
         rr = sp[:, 1] * math.cos(th) + sp[:, 2] * math.sin(th)
@@ -115,11 +118,13 @@ def export_flow(cdir: str, out_dir: str, dom, rho: float, period: float, title: 
         cache.append(dict(wc=wc, wwss=wwss, sx=sp[:, 0], sr=rr, ux=Up[:, 0], ur=ur, tris=tris[keep]))
 
     # ---- data -----------------------------------------------------------
-    with open(os.path.join(out_dir, "timeseries.csv"), "w", newline="") as fh:
+    with open(os.path.join(out_dir, timeseries_name), "w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(rows[0]))
         w.writeheader()
         w.writerows(rows)
     _export_surface(r, times[-1], out_dir, rho)
+    if not make_gif:
+        return {"n_frames": 0, "times": [float(t) for t in times]}
 
     # ---- frames ---------------------------------------------------------
     tt = np.array([q["time_s"] for q in rows])
