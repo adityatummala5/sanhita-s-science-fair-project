@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DentiFlow Project Proposal</title>
+<style>
+  @page { size: Letter; margin: 0.55in 0.6in; }
+  body { font-family: "Liberation Serif", "Times New Roman", Times, serif; font-size: 10.3pt; line-height: 1.25; color: #111; margin: 0; }
+  h1 { font-size: 14pt; margin: 0 0 2pt 0; text-align: center; }
+  .sub { text-align: center; font-size: 10pt; margin: 0 0 6pt 0; }
+  h2 { font-size: 11pt; margin: 7pt 0 2pt 0; border-bottom: 0.6pt solid #444; padding-bottom: 1pt; }
+  p { margin: 0 0 4pt 0; text-align: justify; }
+  ul, ol { margin: 0 0 4pt 0; padding-left: 16pt; }
+  li { margin: 0 0 1.5pt 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 9.3pt; margin: 2pt 0 5pt 0; }
+  th, td { border: 0.5pt solid #777; padding: 1.5pt 4pt; vertical-align: top; text-align: left; }
+  th { background: #e9e9e9; }
+  .refs { font-size: 8.3pt; columns: 2; column-gap: 14pt; line-height: 1.2; }
+  .refs li { margin: 0; }
+  .box { border: 0.6pt solid #444; padding: 3pt 6pt; margin: 3pt 0 5pt 0; background: #f6f6f6; }
+  li, td, th, div { font-family: inherit; }
+</style>
+</head>
+<body>
+
+<h1>DentiFlow: Shark-Skin-Inspired Microtextured Surfaces for Coronary Stents</h1>
+<p class="sub"><b>Project Proposal</b> &nbsp;|&nbsp; Sanhita Tummala</p>
+
+<h2>1. Problem and Rationale</h2>
+<p>Coronary stents keep narrowed arteries open, but they still fail in three main ways. In <b>stent thrombosis</b>, platelets adhere to the device and form a clot. In <b>in-stent restenosis</b>, tissue regrows and narrows the vessel again. And <b>bacterial biofilm</b> can form on the implant. All three begin at the surface of the stent. Plasma proteins (fibrinogen, von Willebrand factor) adsorb within seconds and recruit platelets. Struts that protrude into the lumen also create zones of <b>low wall shear stress (WSS)</b>, <b>flow recirculation</b> and <b>long residence time</b>, and each of these is linked to thrombosis and restenosis [1, 2]. Strut geometry matters clinically: thinner struts alone reduce restenosis [3]. The stent surface and the near-wall flow it creates are therefore engineering variables that can be optimized.</p>
+<p><b>Why shark skin?</b> Shark skin is covered in <b>dermal denticles</b>, tooth-like scales about 100–200 µm long whose crowns carry longitudinal riblets. These structures reduce drag in turbulent flow [4, 5]. A related engineered topography, the Sharklet<sup>™</sup> micropattern, reduces bacterial colonization and biofilm formation without any drug [6]. If a denticle-inspired texture could make the near-wall flow over a stent less thrombogenic and also resist fouling, it would be a passive, drug-free way to address the problem.</p>
+<p><b>The critical gap this project tests.</b> Both claimed benefits come from different regimes than a coronary stent. Riblets reduce drag by damping <i>turbulent</i> near-wall vortices, but coronary flow is <i>laminar</i> (Re ≈ 85 at mean flow, ≈ 160 at peak in our model). Anti-biofilm patterns act at the <i>cell</i> scale (features of about 2–3 µm), roughly 50× smaller than hydrodynamic denticles. Whether a bioinspired surface transfers across these regimes is an open, testable question, and it is the scientific core of this project.</p>
+
+<div class="box"><b>Research question:</b> Can denticle-inspired microtextures be designed for a coronary stent strut so that they reduce platelet adhesion and bacterial biofilm formation <i>without</i> worsening local hemodynamics, compared with an untextured stent?<br>
+<b>Hypothesis:</b> A <i>height-neutral</i> denticle texture (recessed into the strut, so that it adds no protrusion into the lumen) will reduce simulated and measured platelet adhesion and bacterial biofilm compared with a bare strut, while keeping wall TAWSS, OSI and RRT within 5% of the bare stent.</div>
+
+<h2>2. Preliminary Work (completed)</h2>
+<p>I built an automated CAD-to-CFD pipeline (OpenFOAM) and validated it against the exact Poiseuille solution: WSS error was −2.5% and pressure-drop error −2.0%. The model used a Ø3.2 mm, 100 µm-strut, 16-ring stent with Carreau non-Newtonian blood, a pulsatile LAD waveform, and Lagrangian platelet tracking with Sorensen kinetics [7]. On a coarse mesh:</p>
+<ol>
+  <li><b>Denticles placed on top of struts worsened wall hemodynamics in proportion to their height.</b> The low-WSS area rose from 23.5% (bare) to 25–30%.</li>
+  <li><b>Separated denticles were better than a strut uniformly thickened to the same height.</b> They gave 14–17% less low-WSS area and about half the recirculation. So texture is less harmful than bulk, but it is not yet beneficial.</li>
+  <li><b>Shape dominates platelet outcomes.</b> Two designs of equal height (≈ 42 µm) behaved in opposite directions. A parametric heightfield design gave −24% adhesion compared with its height-matched control. My CAD design, which has undercut crowns and steep upstream faces, gave +91%.</li>
+</ol>
+<p>These results reframe the project. The goal is no longer to <i>add</i> texture. It is to find the texture geometry, placement and scale that captures surface effects <i>without paying the protrusion penalty</i>.</p>
+
+<h2>3. Variables and Parameters to Optimize</h2>
+<table>
+  <tr><th style="width:24%">Design parameter (independent)</th><th style="width:30%">Range / levels</th><th>Why it matters</th></tr>
+  <tr><td><b>Placement / net height</b></td><td>Protruding (+25, +43 µm) · flush · recessed (−10 to −25 µm)</td><td>Height was the dominant driver of low WSS. Recessing tests texture separately from protrusion.</td></tr>
+  <tr><td><b>Denticle height h</b></td><td>10–65 µm</td><td>Sets how far each feature penetrates the slow near-wall layer.</td></tr>
+  <tr><td><b>Spacing / coverage</b></td><td>65–150 µm centre-to-centre (≈ 30–90% of strut face)</td><td>Gaps let near-wall flow pass between features. Sparse designs were closer to bare.</td></tr>
+  <tr><td><b>Riblet count, depth, spacing</b></td><td>0–5 riblets; depth 0–0.5 h</td><td>Riblets beat the smooth crown in the screen. The h/s ratio governs groove flushing.</td></tr>
+  <tr><td><b>Crown shape</b></td><td>Heightfield vs undercut; upstream-face angle 20–70°</td><td>This is the suspected cause of the +91% adhesion result and is currently unresolved.</td></tr>
+  <tr><td><b>Orientation</b></td><td>Along strut · along flow · reversed</td><td>It had little effect at coarse resolution, so it will be re-checked on a finer mesh.</td></tr>
+  <tr><td><b>Feature scale (bench)</b></td><td>Hydrodynamic (~50 µm) vs cellular (~2–5 µm) vs hierarchical (both)</td><td>Platelets (~3 µm) and bacteria (~1 µm) respond to the cell scale, not the 50 µm scale.</td></tr>
+</table>
+<p><b>Objectives (dependent variables).</b> <i>CFD:</i> maximize wall and strut TAWSS; minimize low-WSS area (&lt; 0.4 Pa [2]), OSI and high-OSI area (&gt; 0.1), RRT, recirculation volume, pressure drop, and simulated platelet deposition per mm². <i>Bench:</i> platelet adhesion (LDH assay or fluorescence counts), biofilm (crystal violet, OD<sub>590</sub>), and optionally endothelial cell coverage.</p>
+<p><b>Constraints.</b> The texture must be reproducibly fabricable at the chosen scale and must not raise low-WSS area more than 5% above the bare stent. <b>Controls:</b> bare 100 µm stent and height-matched thick-strut controls. <b>Constants:</b> vessel geometry, inlet waveform, Carreau blood properties, mesh settings, boundary conditions.</p>
+<p><b>Optimization strategy.</b> (1) One-factor-at-a-time screen (done). (2) Response-surface design (Stat-Ease central composite) over the top three factors: net height, spacing, crown shape. (3) Rank designs on a weighted composite score and report the Pareto front between hemodynamics and platelet deposition.</p>
+
+<h2>4. Design Inspirations and Candidate Designs</h2>
+<ul>
+  <li><b>Shortfin mako / blacktip denticles</b> [4, 5, 8]: overlapping crowns with three to five riblets. These are the basis for the parametric family (D1–D8) and for my CAD design.</li>
+  <li><b>Continuous vs segmented riblets</b> (riblet-optimization literature): continuous grooves along the flow, compared with discrete denticles.</li>
+  <li><b>Recessed / engraved denticles (new).</b> The same crown shape, carved <i>into</i> the strut's luminal face so the strut height stays at 100 µm. This is the key test of the revised hypothesis.</li>
+  <li><b>Laser-textured strut grooves</b>: microgrooves extended to the strut sidewall edges. These have been shown to speed up endothelial cell coverage on CoCr stents. They are a clinically grounded "texture on stent" comparator.</li>
+  <li><b>Sharklet-type micropattern</b> [6]: diamond arrays of 2 µm ribs. They would be tested on bench coupons, alone and layered onto a denticle (hierarchical design).</li>
+  <li><b>Punched-strut and graft-covered variants</b> (existing CAD): secondary designs, included only if time allows.</li>
+</ul>
+
+<h2>5. Methods Overview and Timeline</h2>
+<ol>
+  <li><b>CFD (months 1–3):</b> mesh-independence study (coarse/medium/fine; accept when metrics change &lt; 5%); digitize the published LAD waveform; run the DOE with three platelet-model seeds per design; select the top 2–3 designs.</li>
+  <li><b>Fabrication (months 3–4):</b> negative molds by high-resolution resin (DLP/SLA) printing, or soft lithography (PDMS) for finer features; imprint into PLGA by solvent casting or hot embossing, plus a flat PLGA control; verify texture transfer by microscopy and profilometry.</li>
+  <li><b>Biological testing (months 4–6),</b> at a supervised institutional lab with SRC/IRB pre-approval: platelet adhesion from platelet-rich plasma (n ≥ 3 coupons per surface, three independent days); biofilm with a BSL-1/2 strain and crystal violet; one-way ANOVA with Dunnett's test vs the flat control (α = 0.05).</li>
+</ol>
+<p><b>Limitations.</b> Rigid, straight artery with no stent expansion; simplified platelet model; bench tests on flat coupons isolate surface-texture effects, not whole-stent performance.</p>
+<p><b>Expected outcome.</b> Either result is informative. If a recessed texture helps, it is a candidate drug-free stent surface. If not, the project shows that shark-skin benefits do not transfer to laminar, cell-scale vascular flow, and that the hemodynamic cost of any protruding texture outweighs them.</p>
+
+<h2>References</h2>
+<ol class="refs">
+  <li>Ng J, et al. Local hemodynamic forces after stenting: implications on restenosis and thrombosis. <i>Arterioscler Thromb Vasc Biol.</i> 2017;37:2231–2242.</li>
+  <li>Malek AM, Alper SL, Izumo S. Hemodynamic shear stress and its role in atherosclerosis. <i>JAMA.</i> 1999;282:2035–2042.</li>
+  <li>Kastrati A, et al. Intracoronary stenting and angiographic results: strut thickness effect on restenosis outcome (ISAR-STEREO). <i>Circulation.</i> 2001;103:2816–2821.</li>
+  <li>Dean B, Bhushan B. Shark-skin surfaces for fluid-drag reduction in turbulent flow: a review. <i>Phil Trans R Soc A.</i> 2010;368:4775–4806.</li>
+  <li>Bechert DW, Bruse M, Hage W. Experiments with three-dimensional riblets as an idealized model of shark skin. <i>Exp Fluids.</i> 2000;28:403–412.</li>
+  <li>Chung KK, et al. Impact of engineered surface microtopography on biofilm formation of <i>Staphylococcus aureus</i>. <i>Biointerphases.</i> 2007;2:89–94.</li>
+  <li>Sorensen EN, et al. Computational simulation of platelet deposition and activation. <i>Ann Biomed Eng.</i> 1999;27:436–448.</li>
+  <li>Wen L, Weaver JC, Lauder GV. Biomimetic shark skin: design, fabrication and hydrodynamic function. <i>J Exp Biol.</i> 2014;217:1656–1666.</li>
+</ol>
+
+</body>
+</html>
