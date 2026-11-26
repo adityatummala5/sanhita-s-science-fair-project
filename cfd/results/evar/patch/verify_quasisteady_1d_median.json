@@ -1,0 +1,10 @@
+{
+  "site": "graft-coarse/site_median_limb_site.csv",
+  "gap_mm": 0.3,
+  "rms_error_pct_of_peak": 2.51,
+  "TAWSS_unsteady_Pa": 0.3387,
+  "TAWSS_quasisteady_Pa": 0.3387,
+  "TAWSS_diff_pct": -0.02,
+  "OSI_unsteady": 0.3559,
+  "OSI_quasisteady": 0.3557
+}
