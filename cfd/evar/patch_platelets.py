@@ -265,11 +265,16 @@ def simulate(tex, levels, U_t, t, out_dir, p: PatchPlateletParams, label=""):
         rng_h = max(wall.h_max - wall.h_min, 1e-9)
         hrel = (h - wall.h_min) / rng_h
     wet = float(bin_area_m2.sum() * 1e6)
+    t_half = 0.5 * p.duration_s
+    late = [d for d in dep if d[0] >= t_half]
     summ = {"design": tex.name, "label": label, "duration_s": p.duration_s, "planform_mm2": planform,
             "wetted_mm2": wet, "deposited_total": len(dep), "adhered": n_surf, "aggregated": len(dep) - n_surf,
             "deposited_per_mm2_planform": round(len(dep) / planform, 1),
             "adhered_per_mm2_wetted": round(n_surf / wet, 1),
             "counting_error_per_mm2_planform": round(math.sqrt(max(len(dep), 1)) / planform, 1),
+            # primary metric: deposition rate once the start-up (initial near-wall platelets) is over
+            "rate_late_per_mm2_s": round(len(late) / planform / (p.duration_s - t_half), 2),
+            "rate_late_counting_error": round(math.sqrt(max(len(late), 1)) / planform / (p.duration_s - t_half), 2),
             "pct_in_lower_third": round(100 * float((hrel < 1 / 3).mean()), 1) if hrel is not None and wall.h_max > wall.h_min else None,
             "pct_in_upper_third": round(100 * float((hrel > 2 / 3).mean()), 1) if hrel is not None and wall.h_max > wall.h_min else None,
             "params": asdict(p)}

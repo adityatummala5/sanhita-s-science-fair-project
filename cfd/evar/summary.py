@@ -98,11 +98,14 @@ def main():
     if pl:
         L += ["## 4. Platelet deposition on the reactive graft surface", "",
               f"{pl[0]['duration_s']} s of real time, 3 seeds per design, mean +/- SD across seeds.", "",
-              "| Design | deposited / mm2 | vs smooth | z vs smooth | adhered / mm2 wetted | aggregated / mm2 | "
-              "% in lowest third of texture |", "|---|---|---|---|---|---|---|"]
+              "Primary metric: deposition rate in the second half of the run (after the start-up transient).", "",
+              "| Design | late rate (/mm2/s) | vs smooth | z vs smooth | total deposited / mm2 | vs smooth | "
+              "adhered / mm2 wetted | aggregated / mm2 | % in lowest third of texture |",
+              "|---|---|---|---|---|---|---|---|---|"]
         for r in pl:
-            L.append(f"| {r['design']} | {r['deposited_per_mm2_mean']} +/- {r['deposited_per_mm2_sd']} | "
-                     f"{r.get('deposited_vs_smooth_pct', '')}% | {r.get('z_vs_smooth', '')} | "
+            L.append(f"| {r['design']} | {r['rate_late_per_mm2_s_mean']} +/- {r['rate_late_per_mm2_s_sd']} | "
+                     f"{r.get('rate_late_vs_smooth_pct', '')}% | {r.get('z_rate_vs_smooth', '')} | "
+                     f"{r['deposited_per_mm2_mean']} +/- {r['deposited_per_mm2_sd']} | {r.get('deposited_vs_smooth_pct', '')}% | "
                      f"{r['adhered_per_mm2_wetted_mean']} | {r['aggregated_per_mm2_mean']} | {r.get('pct_in_lower_third') or ''} |")
         L.append("")
     open(os.path.join(RES, "RESULTS.md"), "w").write("\n".join(L) + "\n")
@@ -120,11 +123,11 @@ def main():
         axs[1].set_title("slow-flow volume vs smooth (%)\n(lower = less near-wall stasis)", fontsize=9)
         if pl:
             pmap = {r["design"]: r for r in pl}
-            v3 = [float(pmap[n].get("deposited_vs_smooth_pct") or 0) if n in pmap else 0 for n in names]
-            e3 = [100 * float(pmap[n]["deposited_per_mm2_sd"]) / float(pmap["smooth"]["deposited_per_mm2_mean"])
+            v3 = [float(pmap[n].get("rate_late_vs_smooth_pct") or 0) if n in pmap else 0 for n in names]
+            e3 = [100 * float(pmap[n]["rate_late_per_mm2_s_sd"]) / float(pmap["smooth"]["rate_late_per_mm2_s_mean"])
                   if n in pmap else 0 for n in names]
             axs[2].barh(names, v3, xerr=e3, color=col)
-            axs[2].set_title("platelet deposition vs smooth (%)\n(lower = better), +/- SD over seeds", fontsize=9)
+            axs[2].set_title("platelet deposition rate vs smooth (%)\n(lower = better), +/- SD over seeds", fontsize=9)
         for ax in axs:
             ax.axvline(0, color="k", lw=0.7)
             ax.tick_params(labelsize=8)

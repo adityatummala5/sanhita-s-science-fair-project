@@ -282,7 +282,11 @@ def run_platelets(designs, cfg, pm, ph, args):
         v = np.array([r["deposited_per_mm2_planform"] for r in rs])
         a = np.array([r["adhered"] / r["planform_mm2"] for r in rs])
         g = np.array([r["aggregated"] / r["planform_mm2"] for r in rs])
-        row = {"design": d.name, "seeds": len(rs), "deposited_per_mm2_mean": round(float(v.mean()), 1),
+        rl = np.array([r["rate_late_per_mm2_s"] for r in rs])
+        row = {"design": d.name, "seeds": len(rs),
+               "rate_late_per_mm2_s_mean": round(float(rl.mean()), 2),
+               "rate_late_per_mm2_s_sd": round(float(rl.std(ddof=1)) if len(rl) > 1 else 0.0, 2),
+               "deposited_per_mm2_mean": round(float(v.mean()), 1),
                "deposited_per_mm2_sd": round(float(v.std(ddof=1)) if len(v) > 1 else 0.0, 1),
                "adhered_per_mm2_mean": round(float(a.mean()), 1), "aggregated_per_mm2_mean": round(float(g.mean()), 1),
                "adhered_per_mm2_wetted_mean": round(float(np.mean([r["adhered_per_mm2_wetted"] for r in rs])), 1),
@@ -293,8 +297,9 @@ def run_platelets(designs, cfg, pm, ph, args):
     if ref:
         for row in rows:
             row["deposited_vs_smooth_pct"] = round(100 * (row["deposited_per_mm2_mean"] / ref["deposited_per_mm2_mean"] - 1), 1)
-            se = math.hypot(row["deposited_per_mm2_sd"], ref["deposited_per_mm2_sd"]) / math.sqrt(row["seeds"])
-            row["z_vs_smooth"] = round((row["deposited_per_mm2_mean"] - ref["deposited_per_mm2_mean"]) / se, 2) if se else None
+            row["rate_late_vs_smooth_pct"] = round(100 * (row["rate_late_per_mm2_s_mean"] / ref["rate_late_per_mm2_s_mean"] - 1), 1)
+            se = math.hypot(row["rate_late_per_mm2_s_sd"], ref["rate_late_per_mm2_s_sd"]) / math.sqrt(row["seeds"])
+            row["z_rate_vs_smooth"] = round((row["rate_late_per_mm2_s_mean"] - ref["rate_late_per_mm2_s_mean"]) / se, 2) if se else None
     import csv as _csv
     with open(os.path.join(base, "platelet_summary.csv"), "w", newline="") as fh:
         w = _csv.DictWriter(fh, fieldnames=list(rows[-1].keys()))
