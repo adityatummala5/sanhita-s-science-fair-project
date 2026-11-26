@@ -210,7 +210,7 @@ def _graft(cdir, rdir, cfg, S, osi, rrt, rho, T):
         ser = (S["snaps"][:, n, :] * area[n][None, :, None]).sum(1) / area[n].sum()     # (nt, 3)
         # principal shear direction over the cycle (sign kept)
         u, sv, vt = np.linalg.svd(ser - 0.0, full_matrices=False)
-        e1 = vt[0] if np.dot(vt[0], ser.mean(0)) >= 0 else -vt[0]
+        e1 = vt[0] if vt[0][0] >= 0 else -vt[0]      # sign: along the vessel axis (+x, downstream)
         tau_s = ser @ e1
         tau_perp = np.linalg.norm(ser - np.outer(tau_s, e1), axis=1)
         ph = S["times"] % T
@@ -220,6 +220,7 @@ def _graft(cdir, rdir, cfg, S, osi, rrt, rho, T):
                          "OSI": round(float(np.average(osi[n], weights=area[n])), 4),
                          "RRT_perPa": round(float(np.average(rrt[n], weights=area[n])), 3),
                          "principal_direction": e1.round(4).tolist(),
+                         "mean_shear_along_axis_Pa": round(float(np.mean(tau_s)), 4),
                          "perp_to_principal_rms_pct": round(100 * float(np.sqrt(np.mean(tau_perp ** 2))
                                                                         / np.sqrt(np.mean(tau_s ** 2))), 1)}
         with open(os.path.join(rdir, f"site_{nm}.csv"), "w", newline="") as fh:

@@ -1,0 +1,214 @@
+{
+  "segments": {
+    "whole_graft (excl. outlet zone)": {
+      "area_mm2": 3734.0,
+      "TAWSS_Pa": 0.3718,
+      "TAWSS_p05_Pa": 0.2307,
+      "lowWSS_area_pct": 69.56,
+      "OSI": 0.3233,
+      "OSI_gt_0.25_area_pct": 88.61,
+      "OSI_gt_0.45_area_pct": 4.3,
+      "RRT_median_perPa": 10.594,
+      "RRT_p95_perPa": 32.174
+    },
+    "body": {
+      "area_mm2": 1112.3,
+      "TAWSS_Pa": 0.2333,
+      "TAWSS_p05_Pa": 0.2158,
+      "lowWSS_area_pct": 100.0,
+      "OSI": 0.3546,
+      "OSI_gt_0.25_area_pct": 100.0,
+      "OSI_gt_0.45_area_pct": 4.09,
+      "RRT_median_perPa": 13.287,
+      "RRT_p95_perPa": 48.487
+    },
+    "bifurcation": {
+      "area_mm2": 487.7,
+      "TAWSS_Pa": 0.461,
+      "TAWSS_p05_Pa": 0.1978,
+      "lowWSS_area_pct": 49.44,
+      "OSI": 0.2216,
+      "OSI_gt_0.25_area_pct": 34.02,
+      "OSI_gt_0.45_area_pct": 0.0,
+      "RRT_median_perPa": 3.775,
+      "RRT_p95_perPa": 21.554
+    },
+    "bifurcation_inner": {
+      "area_mm2": 113.5,
+      "TAWSS_Pa": 0.66,
+      "TAWSS_p05_Pa": 0.2498,
+      "lowWSS_area_pct": 15.45,
+      "OSI": 0.1567,
+      "OSI_gt_0.25_area_pct": 11.13,
+      "OSI_gt_0.45_area_pct": 0.0,
+      "RRT_median_perPa": 2.597,
+      "RRT_p95_perPa": 7.145
+    },
+    "bifurcation_outer": {
+      "area_mm2": 273.1,
+      "TAWSS_Pa": 0.4614,
+      "TAWSS_p05_Pa": 0.1853,
+      "lowWSS_area_pct": 44.83,
+      "OSI": 0.2011,
+      "OSI_gt_0.25_area_pct": 19.08,
+      "OSI_gt_0.45_area_pct": 0.0,
+      "RRT_median_perPa": 3.482,
+      "RRT_p95_perPa": 18.274
+    },
+    "leg": {
+      "area_mm2": 662.8,
+      "TAWSS_Pa": 0.5876,
+      "TAWSS_p05_Pa": 0.5769,
+      "lowWSS_area_pct": 0.0,
+      "OSI": 0.2641,
+      "OSI_gt_0.25_area_pct": 84.4,
+      "OSI_gt_0.45_area_pct": 0.0,
+      "RRT_median_perPa": 3.7,
+      "RRT_p95_perPa": 3.868
+    },
+    "leg_inner": {
+      "area_mm2": 331.3,
+      "TAWSS_Pa": 0.5897,
+      "TAWSS_p05_Pa": 0.5804,
+      "lowWSS_area_pct": 0.0,
+      "OSI": 0.264,
+      "OSI_gt_0.25_area_pct": 82.9,
+      "OSI_gt_0.45_area_pct": 0.0,
+      "RRT_median_perPa": 3.705,
+      "RRT_p95_perPa": 3.869
+    },
+    "leg_outer": {
+      "area_mm2": 331.5,
+      "TAWSS_Pa": 0.5855,
+      "TAWSS_p05_Pa": 0.5742,
+      "lowWSS_area_pct": 0.0,
+      "OSI": 0.2641,
+      "OSI_gt_0.25_area_pct": 85.89,
+      "OSI_gt_0.45_area_pct": 0.0,
+      "RRT_median_perPa": 3.697,
+      "RRT_p95_perPa": 3.867
+    },
+    "flare": {
+      "area_mm2": 334.8,
+      "TAWSS_Pa": 0.4088,
+      "TAWSS_p05_Pa": 0.3226,
+      "lowWSS_area_pct": 51.55,
+      "OSI": 0.3782,
+      "OSI_gt_0.25_area_pct": 100.0,
+      "OSI_gt_0.45_area_pct": 14.41,
+      "RRT_median_perPa": 9.735,
+      "RRT_p95_perPa": 81.179
+    },
+    "flare_inner": {
+      "area_mm2": 165.5,
+      "TAWSS_Pa": 0.4153,
+      "TAWSS_p05_Pa": 0.3226,
+      "lowWSS_area_pct": 50.35,
+      "OSI": 0.379,
+      "OSI_gt_0.25_area_pct": 100.0,
+      "OSI_gt_0.45_area_pct": 14.26,
+      "RRT_median_perPa": 9.914,
+      "RRT_p95_perPa": 81.202
+    },
+    "flare_outer": {
+      "area_mm2": 169.3,
+      "TAWSS_Pa": 0.4025,
+      "TAWSS_p05_Pa": 0.3228,
+      "lowWSS_area_pct": 52.72,
+      "OSI": 0.3774,
+      "OSI_gt_0.25_area_pct": 100.0,
+      "OSI_gt_0.45_area_pct": 14.56,
+      "RRT_median_perPa": 9.513,
+      "RRT_p95_perPa": 80.865
+    },
+    "limb": {
+      "area_mm2": 1136.4,
+      "TAWSS_Pa": 0.3322,
+      "TAWSS_p05_Pa": 0.3066,
+      "lowWSS_area_pct": 94.3,
+      "OSI": 0.3546,
+      "OSI_gt_0.25_area_pct": 100.0,
+      "OSI_gt_0.45_area_pct": 5.87,
+      "RRT_median_perPa": 9.998,
+      "RRT_p95_perPa": 31.479
+    },
+    "limb_inner": {
+      "area_mm2": 568.2,
+      "TAWSS_Pa": 0.3412,
+      "TAWSS_p05_Pa": 0.3154,
+      "lowWSS_area_pct": 92.8,
+      "OSI": 0.3484,
+      "OSI_gt_0.25_area_pct": 100.0,
+      "OSI_gt_0.45_area_pct": 5.13,
+      "RRT_median_perPa": 9.322,
+      "RRT_p95_perPa": 26.973
+    },
+    "limb_outer": {
+      "area_mm2": 568.2,
+      "TAWSS_Pa": 0.3232,
+      "TAWSS_p05_Pa": 0.3042,
+      "lowWSS_area_pct": 95.79,
+      "OSI": 0.3608,
+      "OSI_gt_0.25_area_pct": 100.0,
+      "OSI_gt_0.45_area_pct": 6.61,
+      "RRT_median_perPa": 10.966,
+      "RRT_p95_perPa": 37.263
+    }
+  },
+  "patch_sites": {
+    "worst_limb_site": {
+      "centre_mm": [
+        73.88,
+        22.95,
+        0.12
+      ],
+      "segment": "limb",
+      "side": "outer",
+      "TAWSS_Pa": 0.3457,
+      "OSI": 0.4721,
+      "RRT_perPa": 103.17,
+      "principal_direction": [
+        0.9907,
+        0.1362,
+        0.0025
+      ],
+      "mean_shear_along_axis_Pa": -0.0018,
+      "perp_to_principal_rms_pct": 0.5
+    },
+    "median_limb_site": {
+      "centre_mm": [
+        86.87,
+        10.46,
+        4.9
+      ],
+      "segment": "limb",
+      "side": "inner",
+      "TAWSS_Pa": 0.3486,
+      "OSI": 0.3575,
+      "RRT_perPa": 10.074,
+      "principal_direction": [
+        0.9903,
+        0.1391,
+        -0.0004
+      ],
+      "mean_shear_along_axis_Pa": 0.0978,
+      "perp_to_principal_rms_pct": 5.1
+    }
+  },
+  "periodicity_TAWSS_change_last2cycles_pct": {
+    "probe0": 0.0,
+    "probe1": 0.0,
+    "probe2": 0.06,
+    "probe3": 0.0,
+    "probe4": 0.05,
+    "probe5": 0.05,
+    "probe6": 0.0,
+    "probe7": 0.04,
+    "probe8": 0.01,
+    "probe9": 0.0,
+    "probe10": 0.03,
+    "probe11": 0.0,
+    "probe12": 0.09,
+    "probe13": 0.14
+  }
+}
