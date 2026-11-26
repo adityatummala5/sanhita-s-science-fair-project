@@ -50,8 +50,9 @@ def build_mesh(design: TX.Texture, pm: P.PatchMesh) -> dict:
         shutil.rmtree(base)
     os.makedirs(base)
     Lx, Lz = design.domain()
-    if design.mesh_dx_um:
-        pm = P.PatchMesh(**{**pm.__dict__, "dx_um": design.mesh_dx_um})
+    if design.mesh_dx_um or design.mesh_ny:
+        pm = P.PatchMesh(**{**pm.__dict__, **({"dx_um": design.mesh_dx_um} if design.mesh_dx_um else {}),
+                            **({"ny": design.mesh_ny} if design.mesh_ny else {})})
     nx, nz = P.write_block(base, Lx, Lz, pm)
     P.write_control(base, 1, ascii_points=True)
     P.write_common(base, fc.Physics())
@@ -173,13 +174,14 @@ def main():
     cfg = cfg_all()
     pc = cfg["patch"]
     designs = [TX.from_dict(d) for d in pc["designs"]]
+    extra = [TX.from_dict(d) for d in pc.get("mesh_check", [])]
     if args.list:
         for d in designs:
             print(f"{d.name:<22s} {d.kind:<10s} {d.placement:<9s} {d.description}")
         return
     if args.only:
         want = set(args.only.split(","))
-        designs = [d for d in designs if d.name in want]
+        designs = [d for d in designs + extra if d.name in want]
     pm = P.PatchMesh(**pc.get("mesh", {}))
     ph = fc.Physics(**cfg["physics"])
     levels = pc["gamma_levels_1_s"]

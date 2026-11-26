@@ -136,6 +136,16 @@
         "description": "continuous streamwise riblets, h/s = 0.25, embossed"
       }
     ],
-    "n_iter_from_neighbour": 800
+    "n_iter_from_neighbour": 800,
+    "mesh_check": [
+      {
+        "name": "den_flush_meshfine",
+        "kind": "denticles",
+        "placement": "flush",
+        "mesh_dx_um": 2.0,
+        "mesh_ny": 56,
+        "description": "MESH CHECK: den_flush at 2 um / 56 cells (default 3 um / 40)"
+      }
+    ]
   }
 }

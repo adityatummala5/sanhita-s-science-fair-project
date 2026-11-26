@@ -54,6 +54,7 @@ class Texture:
     description: str = ""
     target_size_mm: float = 0.5          # platelet-simulation domain (tiled unit cells)
     mesh_dx_um: float = 0.0              # per-design override of the patch cell size (0 = default)
+    mesh_ny: int = 0                     # per-design override of cells across the gap (0 = default)
 
     # ------------------------------------------------------------------
     @property
