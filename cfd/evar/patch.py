@@ -273,6 +273,7 @@ boundaryField
     open(f"{cdir}/system/fvSchemes", "w").write(s)
     s = open(f"{cdir}/system/fvSolution").read()
     s = s.replace("SIMPLE\n{", "PIMPLE\n{\n    nOuterCorrectors 3;\n    nCorrectors 2;\n    momentumPredictor yes;")
+    s = s.replace("residualControl { U 1e-7; }", "")
     s = s.replace('U { solver', 'pFinal { solver GAMG; smoother GaussSeidel; tolerance 1e-9; relTol 0; }\n    "(U|UFinal)" { solver')
     open(f"{cdir}/system/fvSolution", "w").write(s)
     end = period * n_cycles
