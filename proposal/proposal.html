@@ -5,7 +5,7 @@
 <title>DentiFlow Project Proposal (EVAR)</title>
 <style>
   @page { size: Letter; margin: 0.55in 0.6in; }
-  body { font-family: "Liberation Serif", "Times New Roman", Times, serif; font-size: 10.2pt; line-height: 1.24; color: #111; margin: 0; }
+  body { font-family: "Liberation Serif", "Times New Roman", Times, serif; font-size: 10pt; line-height: 1.22; color: #111; margin: 0; }
   h1 { font-size: 14pt; margin: 0 0 2pt 0; text-align: center; }
   .sub { text-align: center; font-size: 10pt; margin: 0 0 6pt 0; }
   h2 { font-size: 11pt; margin: 7pt 0 2pt 0; border-bottom: 0.6pt solid #444; padding-bottom: 1pt; }
@@ -27,53 +27,63 @@
 <p class="sub"><b>Project Proposal</b> &nbsp;|&nbsp; Sanhita Tummala</p>
 
 <h2>1. Problem and Rationale</h2>
-<p><b>The clinical problem.</b> Endovascular aneurysm repair (EVAR) is now the most common way to treat abdominal aortic aneurysms. A fabric-covered stent graft is placed inside the aneurysm, and blood then flows over a large polymer surface (woven polyester or ePTFE) instead of the native vessel wall. That surface fails in two ways: <b>thrombosis</b> (clot forms inside the graft, and limb graft occlusion affects 0.7–12.4% of patients [1]) and <b>infection</b> (rare at 0.6%, but deadly, with pooled 30-day mortality of 26.6% [2]).</p>
-<p><b>Evidence that the surface matters.</b> In a dynamic whole-blood test, the polyester grafts were markedly more thrombogenic than ePTFE, in line with the devices' clinical occlusion rates [3]. CFD studies tie limb occlusion to low time-averaged wall shear stress (TAWSS) and high oscillatory shear index (OSI) and relative residence time (RRT) [4]. The resting infrarenal aorta already has low, oscillatory shear [5]. A 12 mm graft limb carrying about 0.5 L/min has a Poiseuille mean WSS of only ≈ 0.2–0.3 Pa, below the 0.4 Pa level linked to thrombosis and atherogenesis [6]. <b>So the graft's luminal surface sits in a slow, oscillating flow that favours clotting, and it can be engineered.</b></p>
-<p><b>Why shark skin, and the gap being tested.</b> Shark skin is covered in dermal denticles: scales about 100–200 µm long whose crowns carry riblets. They reduce drag in turbulent flow [7]. A related micropattern (Sharklet<sup>™</sup>, 2 µm features) reduces <i>Staphylococcus aureus</i> biofilm [8]. Staphylococci are the leading endograft pathogens. But drag reduction does not carry over directly. Infrarenal flow is mostly laminar (peak Re ≈ 2,000; Womersley number ≈ 10). Riblets work at about 15 viscous wall units, which at aortic shear means riblets ≈ 1 mm apart, about 10× larger than a denticle's. Denticle-scale features sit deep inside the ≈ 1 mm oscillatory boundary layer, where deep grooves can trap stagnant eddies [9].</p>
-<p>The project therefore tests the mechanisms that <i>could</i> transfer (groove flushing, contact area, cell-scale anti-adhesion) rather than assuming drag reduction.</p>
-
-<div class="box"><b>Research question:</b> Can a denticle-inspired texture on the luminal surface of an EVAR graft reduce platelet adhesion and bacterial biofilm formation, compared with a smooth graft surface, without worsening the low-shear, oscillatory near-wall flow?<br>
-<b>Hypothesis:</b> A <i>height-neutral</i> (recessed) denticle texture with low groove aspect ratio will reduce simulated and measured platelet adhesion and staphylococcal biofilm compared with a smooth surface, while keeping TAWSS, OSI and RRT within 5% of the smooth surface.</div>
-
-<h2>2. Preliminary Work (coronary pilot, completed)</h2>
-<p>I built and validated an OpenFOAM CAD-to-CFD pipeline (Poiseuille WSS error −2.5%). It uses Carreau non-Newtonian blood, pulsatile inflow and Lagrangian platelet deposition with Sorensen kinetics [10]. I ran it on a 3.2 mm coronary stent with 15 designs. Two findings carry over directly to EVAR:</p>
-<ol>
-  <li><b>Protrusion costs hemodynamics.</b> Denticles placed on top of struts raised the low-WSS wall area from 23.5% to 25–30%, in proportion to their height. This motivates recessed textures.</li>
-  <li><b>Shape dominates platelet adhesion.</b> Two designs of equal height (≈ 42 µm) gave −24% and +91% adhesion against the same control. Undercut crowns with steep upstream faces were the worst.</li>
-</ol>
-<p>I moved to EVAR because covered coronary stents are a niche bailout device and coronary infection is negligible. EVAR is where covered surfaces are standard and both thrombosis and infection matter.</p>
-
-<h2>3. Variables and Parameters to Optimize</h2>
-<table>
-  <tr><th style="width:23%">Design parameter (independent)</th><th style="width:31%">Range / levels</th><th>Why it matters</th></tr>
-  <tr><td><b>Net height (placement)</b></td><td>Protruding +25/+50 µm · flush · recessed −25/−50 µm</td><td>Protrusion was the main hemodynamic cost in the pilot.</td></tr>
-  <tr><td><b>Groove aspect ratio h/s</b></td><td>0.1–1.0 (h 10–100 µm, s 50–300 µm)</td><td>Deep, narrow grooves trap slow recirculating fluid. Shallow ones are flushed.</td></tr>
-  <tr><td><b>Riblets per crown, depth</b></td><td>0–5; depth 0–0.5 h</td><td>Riblets slightly beat smooth crowns in the pilot.</td></tr>
-  <tr><td><b>Crown shape</b></td><td>Heightfield vs undercut; upstream-face angle 20–70°</td><td>This caused the +91% platelet result, and the cause is still unresolved.</td></tr>
-  <tr><td><b>Orientation</b></td><td>Along flow · transverse (like native fabric crimp) · 45°</td><td>Oscillating flow reverses direction, so alignment may matter more here than in coronary flow.</td></tr>
-  <tr><td><b>Feature scale (bench)</b></td><td>Hydrodynamic (~50 µm) · cellular (2–5 µm) · hierarchical</td><td>Platelets (~3 µm) and bacteria (~1 µm) sense the cell scale.</td></tr>
-</table>
-<p><b>Objectives (dependent variables).</b> <i>CFD:</i> maximize patch TAWSS; minimize low-WSS area (&lt; 0.4 Pa), OSI, RRT, stagnant groove volume and simulated platelet deposition per mm². <i>Bench:</i> platelet adhesion (LDH assay or fluorescence counts) and biofilm (crystal violet, OD<sub>590</sub>).</p>
-<p><b>Controls:</b> smooth surface (ePTFE-like) and a woven/crimped polyester-like texture (clinical comparator). <b>Constants:</b> graft geometry, infrarenal waveform, Carreau blood properties, patch size, mesh settings. <b>Strategy:</b> (1) one-factor-at-a-time screen; (2) Stat-Ease central-composite response surface over net height, h/s and crown shape; (3) rank on a composite score and report the Pareto front between hemodynamics and platelet deposition.</p>
-
-<h2>4. Design Inspirations and Candidate Designs</h2>
+<p><b>The clinical problem.</b> Endovascular aneurysm repair (EVAR) is now the most common way to treat abdominal aortic aneurysms. A fabric-covered stent graft lines the aneurysm, so blood flows over a large polymer surface (woven polyester or ePTFE). That surface fails in two ways:</p>
 <ul>
-  <li><b>Mako / blacktip denticles</b> [7]: overlapping crowns with 3–5 riblets. These are the basis for the parametric family and for my existing CAD crown.</li>
-  <li><b>Recessed (engraved) denticles (new):</b> the crown embossed <i>into</i> the graft coating, so the surface adds no protrusion. This is the key test of the hypothesis.</li>
-  <li><b>Continuous vs segmented riblets:</b> streamwise grooves compared with discrete scales, to test groove flushing.</li>
-  <li><b>Native polyester crimp:</b> an "accidental" transverse texture already on commercial grafts, and the clinical baseline to beat.</li>
-  <li><b>Sharklet-type micropattern</b> [8]: 2 µm ribs in diamond arrays, an anti-staphylococcal design. It will be tested alone and layered onto denticles (hierarchical).</li>
+  <li><b>Thrombosis:</b> limb graft occlusion affects 0.7–12.4% of patients [1].</li>
+  <li><b>Infection:</b> rare, at 0.6% of patients, but pooled 30-day mortality is 26.6% [2].</li>
 </ul>
+<p>The surface matters. Polyester grafts are more thrombogenic than ePTFE in whole blood under flow, which matches their clinical occlusion rates [3]. Limb occlusion is linked to low time-averaged wall shear stress (TAWSS), high oscillatory shear index (OSI) and high relative residence time (RRT) [4]. The resting infrarenal aorta already has low, oscillatory shear [5], below the 0.4 Pa level associated with thrombosis [6].</p>
+<p><b>Why shark skin.</b> Shark-skin denticles (100–200 µm scales with riblets) reduce drag in turbulent flow [7], and a 2 µm Sharklet<sup>™</sup> micropattern reduces <i>Staphylococcus aureus</i> biofilm [8]. Staphylococci are the leading endograft pathogens. Graft flow, however, is laminar and oscillatory. Denticle-scale grooves sit deep inside its ≈ 1 mm boundary layer, where deep grooves can trap stagnant eddies [9]. So drag reduction cannot simply be assumed to transfer; this project tests it.</p>
+<div class="box"><b>Research question:</b> Can a denticle-inspired texture on the luminal surface of an EVAR graft reduce platelet adhesion and bacterial biofilm compared with a smooth graft, without worsening the low-shear, oscillatory near-wall flow?<br>
+<b>Original hypothesis (tested computationally, §2):</b> a <i>height-neutral</i> (recessed) denticle texture with low groove aspect ratio keeps TAWSS, OSI and RRT within 5% of a smooth surface while reducing simulated platelet deposition. <b>Result: not supported.</b> No texture met the 5% TAWSS criterion.</div>
 
-<h2>5. Methods Overview and Timeline</h2>
+<h2>2. Computational Study (completed)</h2>
+<p><b>Method.</b> This is a two-scale OpenFOAM model. An earlier coronary pilot used the same Carreau blood and Lagrangian Sorensen platelet kinetics [10].</p>
 <ol>
-  <li><b>Macro-scale CFD (months 1–2):</b> idealized bifurcated endograft (24 mm body, 12 mm limbs, rigid walls) with resting and exercise infrarenal waveforms [5] and Carreau blood; validate against the analytical Womersley solution; map TAWSS, OSI and RRT and pick the worst low-shear site in the limbs.</li>
-  <li><b>Wall-patch CFD (months 2–3):</b> a 2 × 1 mm textured patch with periodic sides, driven by the near-wall shear waveform from step 1; mesh-independence study (accept when metrics change &lt; 5%); run the DOE with the platelet model on a reactive graft surface, 3 seeds per design.</li>
-  <li><b>Fabrication (months 3–4):</b> DLP/SLA-printed or PDMS soft-lithography negative molds; imprint into PLGA films, plus flat and polyester-texture controls; verify texture transfer by microscopy and profilometry.</li>
-  <li><b>Biological testing (months 4–6),</b> at a supervised institutional lab with SRC/IRB pre-approval: platelet-rich plasma adhesion (n ≥ 3 coupons per surface, 3 separate days); staphylococcal biofilm (BSL-2 <i>S. aureus</i>, or a BSL-1 surrogate per fair rules); one-way ANOVA with Dunnett's test vs the smooth control (α = 0.05). Optional: parallel-plate flow chamber at the CFD-predicted shear (0.2–1 Pa).</li>
+  <li><b>Vessel scale.</b> An idealized bifurcated endograft (25 mm body, 12 mm legs, 16 mm limbs) with pulsatile resting infrarenal inflow (0.9 L/min) and a Womersley inlet. This step finds the worst low-shear site.</li>
+  <li><b>Texture scale.</b> A periodic wall patch, one texture unit cell, driven by that site's shear waveform. It is solved at 6 shear levels and the cardiac cycle is rebuilt from them.</li>
+  <li><b>Platelets.</b> Platelets deposit on a reactive graft surface. Each design gets 3 seeds of 20 s, and the metric is the deposition rate over 10–20 s.</li>
 </ol>
-<p><b>Limitations.</b> Idealized, rigid-walled graft geometry. The patch model assumes the texture does not change vessel-scale flow (valid because features are under 1% of the limb diameter). Simplified platelet model. PLGA degrades over weeks to months, so a permanent polymer such as polyurethane would be needed clinically. Coupons test surface effects, not whole-device performance.</p>
-<p><b>Expected outcome.</b> Either result is useful. A positive result identifies a drug-free texture for graft limbs, where clotting risk is highest. A negative result shows quantitatively why shark-skin benefits do not transfer to laminar, low-shear blood flow.</p>
+<p><b>Checks:</b> straight tube vs exact Womersley solution, 1.05% RMS error (TAWSS 0.191 vs 0.187 Pa); graft cycle-to-cycle change &lt; 0.15%; patch mesh 3 vs 2 µm, WSS +4% (the coarser mesh flatters textures, so penalties are conservative); quasi-steady assumption vs exact unsteady solve, TAWSS within 0.1%.</p><p><b>Vessel result.</b> TAWSS is 0.23 Pa in the body and 0.33 Pa in the limbs; 94% of the limb area is below 0.4 Pa. The worst site is the outer limb wall just past the flare: TAWSS 0.35 Pa, OSI 0.47, RRT 103 Pa<sup>−1</sup>, with almost no net forward shear.</p>
+<table>
+  <tr><th>Design (worst limb site)</th><th>TAWSS vs smooth</th><th>Slow-flow volume vs smooth</th><th>Platelet rate vs smooth (z)</th></tr>
+  <tr><td>Smooth (ePTFE-like control)</td><td>0.341 Pa</td><td>—</td><td>340 ± 10 mm<sup>−2</sup>s<sup>−1</sup></td></tr>
+  <tr><td>Polyester-like yarn ridges, 40 µm (control)</td><td>−15%</td><td>+66%</td><td>@PET@</td></tr>
+  <tr><td>Denticles standing on surface, 43 µm</td><td>−38%</td><td>+171%</td><td>@PRO@</td></tr>
+  <tr><td>Height-neutral denticles, 43 µm deep</td><td>−45%</td><td>+198%</td><td>−6.8% (−3.2)</td></tr>
+  <tr><td>Engraved denticles (pits)</td><td>−53%</td><td>+212%</td><td>−3.9% (−2.0)</td></tr>
+  <tr><td>Height-neutral, 20 µm deep</td><td>−22%</td><td>+53%</td><td>−7.7% (−4.3)</td></tr>
+  <tr><td>Height-neutral, turned 90°</td><td>−58%</td><td>+290%</td><td>+3.2% (+1.5)</td></tr>
+  <tr><td>Riblets h/s 0.5 / 0.25</td><td>−29% / <b>−11%</b></td><td>+103% / <b>+27%</b></td><td>−2.1% (−1.0) / −5.6% (−3.0)</td></tr>
+</table>
+<p><b>Findings.</b></p>
+<ol>
+  <li><b>Every texture lowered wall shear on the graft.</b> The penalty grows with groove depth and with added wetted area. Turning the features across the flow was worst. Riblets aligned with the flow and shallow denticles cost least. OSI changed by under 4%, and reversing the crowns changed nothing, as expected for creeping (Stokes) flow at this scale.</li>
+  <li><b>Height-neutral placement did not remove the penalty.</b> It traded protrusion for slow fluid trapped in the field between crowns.</li>
+  <li><b>Simulated platelet benefits were small</b>, at 3–8%. They arise because slower groove flow carries fewer platelets to the wall. The model omits agonist build-up in that same stagnant fluid, which is how low shear promotes clotting in vivo. So the computational case for hydrodynamic-scale denticles is weak.</li>
+</ol>
+<p><b>Revised hypothesis (bench):</b> under flow at the graft's wall shear (≈ 0.35 Pa), hydrodynamic-scale textures (15–43 µm) will not reduce platelet adhesion by more than about 10% compared with smooth. Any meaningful anti-adhesion and anti-biofilm benefit will come from cell-scale (2 µm) micropatterns, which add almost no wall-shear penalty.</p>
+
+<h2>3. Variables and Parameters</h2>
+<table>
+  <tr><th style="width:24%">Parameter</th><th style="width:34%">Computational screen (done)</th><th>Bench (planned)</th></tr>
+  <tr><td>Net height / placement</td><td>Protrude, flush, engraved</td><td>Flush only (lowest cost)</td></tr>
+  <tr><td>Groove aspect ratio h/s</td><td>0.25–0.7. <b>Lower is better</b> for wall shear.</td><td>Shallow riblets (0.25), shallow denticles</td></tr>
+  <tr><td>Orientation</td><td>Along the flow, reversed, transverse. Transverse was worst.</td><td>Along the flow</td></tr>
+  <tr><td>Feature scale</td><td>15–43 µm</td><td>Hydrodynamic (~20 µm), cellular (2 µm), hierarchical</td></tr>
+</table>
+<p><b>Dependent variables.</b> <i>CFD:</i> TAWSS, OSI, RRT, slow-flow volume, platelet deposition rate. <i>Bench:</i> adhered platelets per mm² (fluorescence count or LDH assay) and <i>S. aureus</i> biofilm (crystal violet, OD<sub>590</sub>). <b>Constants:</b> polymer, coupon size, PRP donor pool per day, shear stress, exposure time.</p>
+<p><b>Bench surfaces (7):</b> (1) smooth; (2) PET-like ridges; (3) shallow riblets; (4) 20 µm and (5) 43 µm height-neutral denticles, the latter testing the model's prediction; (6) a Sharklet-type 2 µm pattern [8]; (7) hierarchical, 20 µm denticles with the 2 µm pattern on top.</p>
+<h2>4. Bench Methods and Timeline</h2>
+<ol>
+  <li><b>Fabrication (months 1–2).</b> Make molds by DLP/SLA printing (for the 15–43 µm features) and by photolithography or purchased masters (for the 2 µm pattern). Cast PDMS negatives and imprint the texture into polyurethane or PLGA films. Check transfer by profilometry or SEM, and accept a coupon when the measured feature height is within ±20% of design.</li>
+  <li><b>Platelets under flow (months 2–4).</b> Run a parallel-plate flow chamber at 0.35 Pa, with oscillation if the pump allows, because the CFD shows the effect depends on flow. Run static PRP adhesion as a secondary test.</li>
+  <li><b>Biofilm (months 3–5).</b> Grow <i>S. aureus</i> biofilm (BSL-2, or a BSL-1 surrogate) for 24 h, static.</li>
+  <li><b>Statistics.</b> Use n ≥ 3 coupons per surface on 3 separate days. Analyse with a one-way ANOVA and Dunnett's test against smooth (α = 0.05). Report effect sizes with 95% confidence intervals.</li>
+  <li><b>Pending CFD.</b> Replace the generic waveform with a digitised MRI waveform [5], add an exercise flow case, and rerun the screen, including the 2 µm pattern.</li>
+</ol>
+<p><b>Limitations.</b> The graft model is idealized and rigid. The waveform shape is generic. The platelet model is simplified: no red cells, no agonist fields, no detachment, and rate constants from collagen. Because deposition is limited by diffusion, the result for protruding designs depends on the modelling choice of where the well-mixed blood begins. Coupons test the surface, not the whole device.</p>
+<p><b>Expected outcome.</b> The computational result is already a useful negative: shark-skin drag-reduction geometry does not transfer to the slow, oscillating flow in a graft limb, and recessing it does not fix that. The bench study tests whether a texture can still help, at the cell scale, where platelets and bacteria actually attach.</p>
 
 <h2>References</h2>
 <ol class="refs">
