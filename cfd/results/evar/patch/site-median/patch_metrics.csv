@@ -1,0 +1,12 @@
+design,wetted_area_ratio,TAWSS_Pa,TAWSS_p05_Pa,lowWSS_area_pct,OSI,OSI_gt_0.25_area_pct,OSI_gt_0.45_area_pct,RRT_median_perPa,RRT_p95_perPa,WSSG_p95_Pa_mm,slow_flow_volume_mm3_per_mm2,planform_stress_Pa,area_below_half_smooth_TAWSS_pct,TAWSS_Pa_vs_smooth_pct,RRT_median_perPa_vs_smooth_pct,slow_flow_volume_mm3_per_mm2_vs_smooth_pct,planform_stress_Pa_vs_smooth_pct,OSI_vs_smooth_pct,description
+smooth,1.0,0.3389,0.3389,100.0,0.3558,100.0,0.0,10.229,10.229,0.0,0.00517,0.0978,0.0,0.0,0.0,0.0,0.0,0.0,CONTROL: untextured graft (ePTFE-like)
+pet,1.0633,0.2891,0.0648,70.81,0.3546,100.0,0.0,15.017,51.389,12.06,0.00865,0.0842,38.77,-14.7,46.8,67.3,-13.9,-0.3,"CONTROL: idealized woven-polyester yarn texture, transverse ridges 200 um apart, 40 um deep"
+den_protrude,1.7101,0.2099,0.0079,83.08,0.3562,100.0,0.0,27.546,483.677,71.12,0.01408,0.0965,59.28,-38.1,169.3,172.3,-1.3,0.1,"denticles standing on the surface (pilot-study style), 43 um"
+den_flush,1.7101,0.1861,0.007,86.07,0.3555,100.0,0.0,30.554,528.062,61.73,0.01554,0.0859,62.67,-45.1,198.7,200.6,-12.2,-0.1,"HEIGHT-NEUTRAL: crown tops level with the surface, field cut 43 um deep"
+den_engraved,1.7101,0.1584,0.0074,82.57,0.3562,100.0,0.0,60.028,525.588,84.5,0.0162,0.064,72.81,-53.3,486.8,213.3,-34.6,0.1,crown shape cut into the surface as pits
+den_flush_short,1.2075,0.2641,0.0645,79.46,0.3544,100.0,0.0,14.978,50.99,50.94,0.00793,0.0895,35.05,-22.1,46.4,53.4,-8.5,-0.4,"height-neutral, 20 um deep (low h/s)"
+den_flush_sparse,1.2939,0.232,0.0544,85.18,0.3538,100.0,0.0,23.838,60.927,57.49,0.01342,0.0806,65.08,-31.5,133.0,159.6,-17.6,-0.6,"height-neutral, sparse (150 x 100 um lattice)"
+den_flush_reverse,1.7101,0.1861,0.007,86.07,0.3555,100.0,0.0,30.601,525.699,61.68,0.01554,0.0859,62.67,-45.1,199.2,200.6,-12.2,-0.1,"height-neutral, crowns pointing upstream"
+den_flush_transverse,1.4909,0.1433,0.0094,92.18,0.354,100.0,0.0,51.701,374.617,102.43,0.0204,0.0374,79.5,-57.7,405.4,294.6,-61.8,-0.5,"height-neutral, crowns turned 90 deg"
+riblets_deep,1.4142,0.2413,0.0415,90.0,0.3542,100.0,0.0,16.413,80.922,92.85,0.01048,0.0985,40.0,-28.8,60.5,102.7,0.7,-0.4,"continuous streamwise riblets, h/s = 0.5, embossed"
+riblets_shallow,1.118,0.3009,0.1268,80.0,0.3552,100.0,0.0,11.719,26.792,56.63,0.00655,0.0971,10.0,-11.2,14.6,26.7,-0.7,-0.2,"continuous streamwise riblets, h/s = 0.25, embossed"

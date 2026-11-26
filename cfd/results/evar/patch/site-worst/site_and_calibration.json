@@ -1,0 +1,44 @@
+{
+  "site": "graft-coarse/site_worst_limb_site.csv",
+  "TAWSS_site_Pa": 0.340998333,
+  "OSI_site": 0.49731212029121563,
+  "smooth_calibration": [
+    {
+      "gamma_1_s": 0.3,
+      "tau_exact_Pa": 0.01367464000261017,
+      "tau_cfd_Pa": 0.013674640096724032,
+      "error_pct": 0.0
+    },
+    {
+      "gamma_1_s": 1.5,
+      "tau_exact_Pa": 0.03292427278125246,
+      "tau_cfd_Pa": 0.032924272119998925,
+      "error_pct": -0.0
+    },
+    {
+      "gamma_1_s": 6.0,
+      "tau_exact_Pa": 0.0667529689394036,
+      "tau_cfd_Pa": 0.06675297021865845,
+      "error_pct": 0.0
+    },
+    {
+      "gamma_1_s": 25.0,
+      "tau_exact_Pa": 0.1629386211690601,
+      "tau_cfd_Pa": 0.16293862462043768,
+      "error_pct": 0.0
+    },
+    {
+      "gamma_1_s": 100.0,
+      "tau_exact_Pa": 0.47076651313575524,
+      "tau_cfd_Pa": 0.4707665145397187,
+      "error_pct": 0.0
+    },
+    {
+      "gamma_1_s": 400.0,
+      "tau_exact_Pa": 1.5862439502133785,
+      "tau_cfd_Pa": 1.5862439870834353,
+      "error_pct": 0.0
+    }
+  ],
+  "lid_speed_max_mm_s": 102.03721805636837
+}
