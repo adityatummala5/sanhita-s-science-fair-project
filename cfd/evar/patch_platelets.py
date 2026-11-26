@@ -62,6 +62,7 @@ class PatchPlateletParams:
     duration_s: float = 30.0
     dt_s: float = 0.005
     coverage_bin_um: float = 10.0
+    ds_max_um: float = 4.0            # max advective travel per sub-step
     seed: int = 1
 
 
@@ -192,18 +193,27 @@ def simulate(tex, levels, U_t, t, out_dir, p: PatchPlateletParams, label=""):
     p_rs = 1 - math.exp(-p.k_rs_m_s * dt / (delta * 1e-3))
     p_as = 1 - math.exp(-p.k_as_m_s * dt / (delta * 1e-3))
     p_aa = 1 - math.exp(-p.k_aa_m_s * dt / (delta * 1e-3))
+    n_sub_total = 0
     for step in range(nsteps):
         ti = step % nt
         tt = step * dt
+        # advection-diffusion with adaptive midpoint (RK2) sub-steps: each sub-step moves a
+        # platelet at most ds_max, so particles follow curved streamlines over the texture
+        # (a single explicit 5 ms step would ratchet them away from the wall)
         u, g = flow.sample(x, ti)
-        D = (p.D_brownian_m2_s + alpha * g) * 1e6                  # mm2/s
-        xn = x + u * dt + np.sqrt(2 * D * dt)[:, None] * rng.standard_normal(x.shape)
-        # wall: no penetration (reject step)
-        bad = xn[:, 1] < wall.height(xn) + 0.5 * p.diameter_um / 1e3
-        xn[bad] = x[bad]
-        x = xn
-        x[:, 0] %= Lx
-        x[:, 2] %= Lz
+        nsub = max(1, int(math.ceil(np.abs(u).max() * dt / (p.ds_max_um / 1e3)))) if len(x) else 1
+        h = dt / nsub
+        for _ in range(nsub):
+            u, g = flow.sample(x, ti)
+            um, _g = flow.sample(x + 0.5 * h * u, ti)
+            D = (p.D_brownian_m2_s + alpha * g) * 1e6                  # mm2/s
+            xn = x + h * um + np.sqrt(2 * D * h)[:, None] * rng.standard_normal(x.shape)
+            bad = xn[:, 1] < wall.height(xn) + 0.5 * p.diameter_um / 1e3       # no wall penetration
+            xn[bad] = x[bad]
+            x = xn
+            x[:, 0] %= Lx
+            x[:, 2] %= Lz
+        n_sub_total += nsub
         # activation near deposits, aggregation onto deposits
         if len(dep_pts):
             dd, di = dep_tree.query(np.c_[x[:, 0], x[:, 1] + 1.0, x[:, 2]],
@@ -277,6 +287,7 @@ def simulate(tex, levels, U_t, t, out_dir, p: PatchPlateletParams, label=""):
             "rate_late_counting_error": round(math.sqrt(max(len(late), 1)) / planform / (p.duration_s - t_half), 2),
             "pct_in_lower_third": round(100 * float((hrel < 1 / 3).mean()), 1) if hrel is not None and wall.h_max > wall.h_min else None,
             "pct_in_upper_third": round(100 * float((hrel > 2 / 3).mean()), 1) if hrel is not None and wall.h_max > wall.h_min else None,
+            "mean_substeps_per_step": round(n_sub_total / max(nsteps, 1), 2),
             "params": asdict(p)}
     json.dump(summ, open(os.path.join(out_dir, "summary.json"), "w"), indent=2)
     # map

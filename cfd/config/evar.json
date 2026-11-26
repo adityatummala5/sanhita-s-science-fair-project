@@ -146,6 +146,13 @@
         "mesh_ny": 56,
         "description": "MESH CHECK: den_flush at 2 um / 56 cells (default 3 um / 40)"
       }
-    ]
+    ],
+    "platelets": {
+      "duration_s": 20.0,
+      "dt_s": 0.005,
+      "ds_max_um": 4.0,
+      "layer_um": 70.0,
+      "_comment": "20 s of real time; primary metric = deposition rate over 10-20 s. RK2 sub-steps <= 4 um travel."
+    }
   }
 }

@@ -269,7 +269,7 @@ def run_platelets(designs, cfg, pm, ph, args):
     U_t = np.sign(tau_site) * pm.h_lid_mm * 1e-3 * P.gamma_from_tau(tau_site, ph)
     site_tag = f"site-{os.path.basename(args.site).replace('.csv', '')}"
     base = os.path.join(RES, site_tag, "platelets")
-    pp_cfg = cfg["patch"].get("platelets", {})
+    pp_cfg = {k: v for k, v in cfg["patch"].get("platelets", {}).items() if not k.startswith("_")}
     rows = []
 
     jobs = [(d, s) for d in designs for s in range(1, args.seeds + 1)]
