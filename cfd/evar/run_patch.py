@@ -168,6 +168,8 @@ def main():
     ap.add_argument("--only", default="")
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--site", default="worst", help="worst | median | analytical_limb | path/to/site.csv")
+    ap.add_argument("--layer-ref", default="nominal", choices=["nominal", "crest"],
+                    help="platelet reservoir height measured from the nominal surface or from the texture crest")
     ap.add_argument("--jobs", type=int, default=os.cpu_count() or 4)
     args = ap.parse_args()
 
@@ -268,8 +270,9 @@ def run_platelets(designs, cfg, pm, ph, args):
     t, tau_site, src = post_patch.site_waveform(args.site, cfg, ph, os.path.dirname(RES))
     U_t = np.sign(tau_site) * pm.h_lid_mm * 1e-3 * P.gamma_from_tau(tau_site, ph)
     site_tag = f"site-{os.path.basename(args.site).replace('.csv', '')}"
-    base = os.path.join(RES, site_tag, "platelets")
+    base = os.path.join(RES, site_tag, "platelets" if args.layer_ref == "nominal" else f"platelets_{args.layer_ref}ref")
     pp_cfg = {k: v for k, v in cfg["patch"].get("platelets", {}).items() if not k.startswith("_")}
+    pp_cfg["layer_ref"] = args.layer_ref
     rows = []
 
     jobs = [(d, s) for d in designs for s in range(1, args.seeds + 1)]

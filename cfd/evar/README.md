@@ -16,7 +16,7 @@ config/evar.json
    └─► run_patch.py              periodic textured wall patch, one texture unit cell, Stokes flow
             ├─ --stage solve     steady solves at 6 shear levels per design
             ├─ --stage post      cardiac cycle rebuilt with the site waveform -> surface metrics
-            ├─ --stage verify    full time-dependent run of one design vs the quasi-steady rebuild
+            ├─ verify_quasisteady.py  exact unsteady 1D Carreau Couette check of the quasi-steady shortcut
             └─ --stage platelets Lagrangian platelet adhesion on the reactive graft surface
 ```
 
@@ -86,7 +86,9 @@ All commands are run from `cfd/`. OpenFOAM v2406 runs in Docker, the same as for
 | Lid height vs limb boundary layer | 0.3 mm vs ~1 mm | Near-wall velocity is close to linear |
 | Lid height vs texture disturbance | 0.3 mm vs period/2π | The lid sees an undisturbed flow |
 
-**Solving.** Each design is solved steadily at 6 shear levels (γ = 0.3 to 400 s⁻¹), and the cardiac cycle is rebuilt by interpolating between levels using the site waveform. `--stage verify` checks this shortcut against a full time-dependent run.
+**Solving.** Each design is solved steadily at 6 shear levels (γ = 0.3 to 400 s⁻¹), and the cardiac cycle is rebuilt by interpolating between levels using the site waveform. `verify_quasisteady.py` checks this shortcut against an exact unsteady 1D Carreau Couette solve of the 0.3 mm gap (inertia across the much smaller texture features is smaller still). Result: RMS error 2.9% (worst site) and 2.5% (median site) of peak stress; TAWSS within 0.1%; OSI unchanged. A full 3D time-dependent patch run (`--stage verify`) was attempted but was numerically unstable at the required time step and is not used.
+
+**Mesh check.** den_flush at γ = 25 s⁻¹ on 3 µm cells (default) vs 2 µm cells: mean |WSS| +4.2%, slow-flow volume −0.2% (`results/evar/patch/mesh_independence_den_flush.json`). The default mesh slightly over-predicts textured-wall stress, so texture penalties are if anything understated.
 
 **Calibration.** For the smooth wall, the lid speed is set from the Carreau law so that it reproduces the site's wall stress exactly; CFD matches the exact Couette stress to 8 significant digits. Every textured design is driven by the same U(t), so all designs see the same outer flow.
 
@@ -122,20 +124,22 @@ Denticle crowns use the coronary pipeline's shape (100 × 70 µm, 3 riblets), wi
 
 **Platelets** (`patch_platelets.py`). The kinetics are the same as in the coronary pilot (Sorensen 1999; shear-enhanced diffusivity from Zydney & Colton). The setup differs in three ways:
 - The **whole graft surface is reactive**.
-- Platelets are tracked in the 70 µm layer next to the wall, with the bulk platelet count held fixed at the top of that layer.
+- Platelets are tracked in the 70 µm layer next to the wall, with the bulk platelet count held fixed in the top 10 µm of that layer. By default the layer is measured from the nominal surface (y = 0). Protruding designs (`den_protrude`, `pet`) then sit closer to the reservoir, which raises their deposition for a purely geometric reason, so they are also run with `--layer-ref crest` (layer measured from the texture crest; results in `platelets_crestref/`). Flush, engraved and riblet designs have their crest at y = 0, so the choice does not affect them.
 - Each particle is one real platelet, in a tiled 0.5 × 0.5 mm domain.
 
-Each design is run for 3 seeds and 30 s of real time. Results are reported as mean ± SD per mm² and compared with the smooth graft.
+Particles move with adaptive midpoint (RK2) sub-steps of at most 4 µm travel. An earlier explicit-Euler version let particles drift through the texture streamlines and was withdrawn; the RK2 drift is < 0.4 µm per cycle. Each design is run for 3 seeds and 20 s of real time. **The primary metric is the deposition rate over 10–20 s** (after the start-up transient), reported as mean ± SD per mm² of planform and compared with the smooth graft (z = difference / combined standard error).
 
 ## 3. Limitations (state these in the write-up)
 
 1. The waveform shape is generic until it is replaced with digitised data, and the peak flow is an assumption.
 2. The graft is idealized, rigid and symmetric, and is simulated as a quarter model. Its fabric is smooth at the vessel scale; crimps and stent rings are not modelled.
 3. The patch is driven along one principal direction. The site's cross-flow component is reported in `graft_metrics.json` but not imposed.
-4. The patch is quasi-steady Stokes flow, which is valid for this regime and checked with `--stage verify`.
+4. The patch is quasi-steady Stokes flow, which is valid for this regime and checked with `verify_quasisteady.py` (1D gap solve, < 3% RMS).
 5. The fixed-speed lid gives protruding textures a few per cent more shear. This biases the comparison *in favour of* protruding designs, which makes it conservative against the height-neutral hypothesis.
 6. The platelet model uses simplified activation and aggregation, no red cells, and no detachment. Its rate constants were measured on collagen, so compare designs rather than quoting absolute counts.
 7. Textures are idealized heightfields, so undercut crowns are not represented.
+8. snappyHexMesh boundary layers were mostly not added on the graft (0.26% coverage). The Womersley validation on the same settings (1% RMS) bounds the effect on wall stress, but near-wall resolution at the vessel scale is the main mesh limitation.
+9. Platelet deposition is diffusion-limited, so it depends on the distance from the wall to the well-mixed reservoir. Protruding textures are compared both ways (nominal and crest reference); treat their platelet result as reference-dependent.
 
 ## 4. Reproduce
 
@@ -156,11 +160,19 @@ python3 evar/run_patch.py --stage post --site worst
 ```
 
 ```bash
-python3 evar/run_patch.py --stage verify --only den_flush --site worst
+python3 evar/verify_quasisteady.py --site worst
 ```
 
 ```bash
-python3 evar/run_patch.py --stage platelets --site worst --seeds 3
+python3 evar/run_patch.py --stage platelets --site worst --seeds 3 --jobs 3
+```
+
+```bash
+python3 evar/run_patch.py --stage platelets --site worst --seeds 3 --jobs 3 --only smooth,pet,den_protrude --layer-ref crest
+```
+
+```bash
+python3 evar/summary.py --site worst
 ```
 
 | Command | Time on 4 cores |
@@ -168,3 +180,4 @@ python3 evar/run_patch.py --stage platelets --site worst --seeds 3
 | `validation` | ~30 min |
 | `graft` | ~1.5 h |
 | `--stage solve` | ~1.5 h for all designs |
+| `--stage platelets` (11 designs × 3 seeds × 20 s, 3 jobs) | ~2.5 h |

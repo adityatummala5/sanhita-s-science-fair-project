@@ -59,6 +59,7 @@ class PatchPlateletParams:
     p_inf_per_m2: float = 7.0e10
     layer_um: float = 70.0            # tracked layer above the nominal surface
     reservoir_um: float = 10.0
+    layer_ref: str = "nominal"        # nominal: layer measured from y = 0; crest: from the texture's highest point
     duration_s: float = 30.0
     dt_s: float = 0.005
     coverage_bin_um: float = 10.0
@@ -150,7 +151,7 @@ def simulate(tex, levels, U_t, t, out_dir, p: PatchPlateletParams, label=""):
     Lx, Lz = tex.domain(cfd=False)          # tiled domain; flow and wall lookups wrap the unit cell
     planform = Lx * Lz
     c_mm3 = p.concentration_per_uL                 # 1 uL = 1 mm3
-    top = p.layer_um / 1e3
+    top = p.layer_um / 1e3 + (max(wall.h_max, 0.0) if p.layer_ref == "crest" else 0.0)
     res_lo = top - p.reservoir_um / 1e3
     delta = p.reaction_layer_um / 1e3
     alpha = _alpha(p)
