@@ -254,6 +254,9 @@ def _platelet_job(a):
     import patch_platelets as PP
     dd, seed, U_t, t, src, base, prm = a
     d = TX.from_dict(dd)
+    done = os.path.join(base, d.name, f"seed{seed}", "summary.json")
+    if os.path.exists(done) and json.load(open(done))["duration_s"] == prm.get("duration_s", 30.0):
+        return json.load(open(done))                 # resume: this run already finished
     lv = post_patch.load_levels(os.path.join(RUNS, d.name))
     p = PP.PatchPlateletParams(**{**prm, "seed": seed})
     return PP.simulate(d, lv, U_t, t, os.path.join(base, d.name, f"seed{seed}"), p, label=src)
