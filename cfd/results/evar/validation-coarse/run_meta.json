@@ -1,0 +1,12 @@
+{
+  "case": "validation",
+  "preset": "coarse",
+  "womersley_number_inlet": 17.243239391562952,
+  "Re_mean_inlet": 231.36581518595176,
+  "Re_peak_inlet": 1156.8290720736622,
+  "mean_mL_s": 15.00000005,
+  "peak_mL_s": 75.0,
+  "min_mL_s": -16.751500611676672,
+  "period_s": 1.0,
+  "n_cycles": 2
+}

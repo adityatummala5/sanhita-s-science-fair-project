@@ -1,0 +1,12 @@
+{
+  "womersley_number": 17.243239391562952,
+  "TAWSS_analytical_Pa": 0.1869,
+  "TAWSS_cfd_Pa": 0.1914,
+  "OSI_analytical": 0.4085,
+  "OSI_cfd": 0.4112,
+  "peak_tau_analytical_Pa": 0.9717,
+  "peak_tau_cfd_Pa": 0.9704,
+  "rms_error_pct_of_peak": 1.05,
+  "TAWSS_error_pct": 2.41,
+  "probe_cycle_to_cycle_rms_pct_of_peak": 4.58
+}

@@ -1,0 +1,141 @@
+{
+  "_comment": "DentiFlow EVAR experiment. Vessel scale in mm, texture scale in micrometres. Paths are relative to cfd/.",
+  "inflow": {
+    "_source": "Resting infrarenal mean flow 0.9 L/min (Taylor et al., Ann Biomed Eng 2002;30:402). Triphasic shape is GENERIC (evar/flow.py) until replaced by a digitised waveform; peak is an assumption.",
+    "waveform_csv": "config/waveform_infrarenal_rest_approx.csv",
+    "period_s": 1.0,
+    "mean_mL_s": 15.0,
+    "peak_mL_s": 75.0
+  },
+  "physics": {
+    "rho": 1060.0,
+    "mu0": 0.056,
+    "mu_inf": 0.00345,
+    "lam": 3.313,
+    "n": 0.3568,
+    "newtonian": false
+  },
+  "graft": {
+    "D_body": 25.0,
+    "D_leg": 12.0,
+    "D_limb": 16.0,
+    "L_body": 60.0,
+    "L_trans": 15.0,
+    "x_flare0": 55.0,
+    "x_flare1": 70.0,
+    "x_end": 130.0,
+    "half_angle_deg": 8.0
+  },
+  "validation": {
+    "radius_mm": 12.5,
+    "length_mm": 60.0,
+    "mu_Pa_s": 0.0035,
+    "n_cycles": 2
+  },
+  "steady_init_iter": 600,
+  "pulsatile": {
+    "n_cycles": 3,
+    "max_co": 3.0,
+    "snapshots_per_cycle": 40,
+    "_comment": "maxCo 3 with 2 PIMPLE outer correctors; validated on the straight tube at maxCo 1 (see results/evar/validation-coarse)"
+  },
+  "patch": {
+    "_comment": "Wall-patch texture model (evar/patch.py). Denticle crowns follow pipeline/geometry.py (100x70x43 um, 3 riblets) with softened side walls.",
+    "mesh": {
+      "h_lid_mm": 0.3,
+      "dx_um": 3.0,
+      "ny": 40,
+      "grading": 30.0
+    },
+    "gamma_levels_1_s": [
+      0.3,
+      1.5,
+      6.0,
+      25.0,
+      100.0,
+      400.0
+    ],
+    "n_iter": 1500,
+    "designs": [
+      {
+        "name": "smooth",
+        "kind": "smooth",
+        "description": "CONTROL: untextured graft (ePTFE-like)"
+      },
+      {
+        "name": "pet",
+        "kind": "pet",
+        "height_um": 40.0,
+        "description": "CONTROL: idealized woven-polyester yarn texture, transverse ridges 200 um apart, 40 um deep",
+        "mesh_dx_um": 5.0
+      },
+      {
+        "name": "den_protrude",
+        "kind": "denticles",
+        "placement": "protrude",
+        "description": "denticles standing on the surface (pilot-study style), 43 um"
+      },
+      {
+        "name": "den_flush",
+        "kind": "denticles",
+        "placement": "flush",
+        "description": "HEIGHT-NEUTRAL: crown tops level with the surface, field cut 43 um deep"
+      },
+      {
+        "name": "den_engraved",
+        "kind": "denticles",
+        "placement": "engraved",
+        "description": "crown shape cut into the surface as pits"
+      },
+      {
+        "name": "den_flush_short",
+        "kind": "denticles",
+        "placement": "flush",
+        "height_um": 20.0,
+        "description": "height-neutral, 20 um deep (low h/s)"
+      },
+      {
+        "name": "den_flush_sparse",
+        "kind": "denticles",
+        "placement": "flush",
+        "spacing_um": 150.0,
+        "row_spacing_um": 100.0,
+        "description": "height-neutral, sparse (150 x 100 um lattice)",
+        "mesh_dx_um": 4.0
+      },
+      {
+        "name": "den_flush_reverse",
+        "kind": "denticles",
+        "placement": "flush",
+        "orientation": "reverse",
+        "description": "height-neutral, crowns pointing upstream"
+      },
+      {
+        "name": "den_flush_transverse",
+        "kind": "denticles",
+        "placement": "flush",
+        "orientation": "transverse",
+        "spacing_um": 85.0,
+        "row_spacing_um": 110.0,
+        "description": "height-neutral, crowns turned 90 deg"
+      },
+      {
+        "name": "riblets_deep",
+        "kind": "riblets",
+        "placement": "flush",
+        "height_um": 30.0,
+        "riblet_spacing_um": 60.0,
+        "description": "continuous streamwise riblets, h/s = 0.5, embossed"
+      },
+      {
+        "name": "riblets_shallow",
+        "kind": "riblets",
+        "placement": "flush",
+        "height_um": 15.0,
+        "riblet_spacing_um": 60.0,
+        "description": "continuous streamwise riblets, h/s = 0.25, embossed"
+      }
+    ],
+    "n_iter_from_neighbour": 800
+  }
+}
