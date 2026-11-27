@@ -15,7 +15,7 @@
   table { border-collapse: collapse; width: 100%; font-size: 9.3pt; margin: 2pt 0 5pt 0; }
   th, td { border: 0.5pt solid #777; padding: 1.5pt 4pt; vertical-align: top; text-align: left; }
   th { background: #e9e9e9; }
-  .refs { font-size: 8.3pt; columns: 2; column-gap: 14pt; line-height: 1.2; }
+  .refs { font-size: 8pt; columns: 2; column-gap: 14pt; line-height: 1.2; }
   .refs li { margin: 0; }
   .box { border: 0.6pt solid #444; padding: 3pt 6pt; margin: 3pt 0 5pt 0; background: #f6f6f6; }
   li, td, th, div { font-family: inherit; }
@@ -48,19 +48,20 @@
 <table>
   <tr><th>Design (worst limb site)</th><th>TAWSS vs smooth</th><th>Slow-flow volume vs smooth</th><th>Platelet rate vs smooth (z)</th></tr>
   <tr><td>Smooth (ePTFE-like control)</td><td>0.341 Pa</td><td>—</td><td>340 ± 10 mm<sup>−2</sup>s<sup>−1</sup></td></tr>
-  <tr><td>Polyester-like yarn ridges, 40 µm (control)</td><td>−15%</td><td>+66%</td><td>@PET@</td></tr>
-  <tr><td>Denticles standing on surface, 43 µm</td><td>−38%</td><td>+171%</td><td>@PRO@</td></tr>
+  <tr><td>Polyester-like yarn ridges, 40 µm (control)</td><td>−15%</td><td>+66%</td><td>−3.6% (−0.9)*</td></tr>
+  <tr><td>Denticles standing on surface, 43 µm</td><td>−38%</td><td>+171%</td><td>−0.2% (−0.1)*</td></tr>
   <tr><td>Height-neutral denticles, 43 µm deep</td><td>−45%</td><td>+198%</td><td>−6.8% (−3.2)</td></tr>
   <tr><td>Engraved denticles (pits)</td><td>−53%</td><td>+212%</td><td>−3.9% (−2.0)</td></tr>
   <tr><td>Height-neutral, 20 µm deep</td><td>−22%</td><td>+53%</td><td>−7.7% (−4.3)</td></tr>
   <tr><td>Height-neutral, turned 90°</td><td>−58%</td><td>+290%</td><td>+3.2% (+1.5)</td></tr>
   <tr><td>Riblets h/s 0.5 / 0.25</td><td>−29% / <b>−11%</b></td><td>+103% / <b>+27%</b></td><td>−2.1% (−1.0) / −5.6% (−3.0)</td></tr>
 </table>
-<p><b>Findings.</b></p>
+<p style="font-size:8.8pt">z = difference / standard error over 3 seeds (Monte Carlo noise only). *Well-mixed blood level set above the crest; set above the base, these gave +70–78%, a geometric artifact (corrected).</p>
+<p style="break-before: page"><b>Findings.</b></p>
 <ol>
   <li><b>Every texture lowered wall shear on the graft.</b> The penalty grows with groove depth and with added wetted area. Turning the features across the flow was worst. Riblets aligned with the flow and shallow denticles cost least. OSI changed by under 4%, and reversing the crowns changed nothing, as expected for creeping (Stokes) flow at this scale.</li>
   <li><b>Height-neutral placement did not remove the penalty.</b> It traded protrusion for slow fluid trapped in the field between crowns.</li>
-  <li><b>Simulated platelet benefits were small</b>, at 3–8%. They arise because slower groove flow carries fewer platelets to the wall. The model omits agonist build-up in that same stagnant fluid, which is how low shear promotes clotting in vivo. So the computational case for hydrodynamic-scale denticles is weak.</li>
+  <li><b>Simulated platelet effects were small</b>, from −8% to +3%, and no design was clearly better than smooth. They arise because slower groove flow carries fewer platelets to the wall. The model omits agonist build-up in that same stagnant fluid, which is how low shear promotes clotting in vivo. So the computational case for hydrodynamic-scale denticles is weak.</li>
 </ol>
 <p><b>Revised hypothesis (bench):</b> under flow at the graft's wall shear (≈ 0.35 Pa), hydrodynamic-scale textures (15–43 µm) will not reduce platelet adhesion by more than about 10% compared with smooth. Any meaningful anti-adhesion and anti-biofilm benefit will come from cell-scale (2 µm) micropatterns, which add almost no wall-shear penalty.</p>
 
@@ -80,9 +81,9 @@
   <li><b>Platelets under flow (months 2–4).</b> Run a parallel-plate flow chamber at 0.35 Pa, with oscillation if the pump allows, because the CFD shows the effect depends on flow. Run static PRP adhesion as a secondary test.</li>
   <li><b>Biofilm (months 3–5).</b> Grow <i>S. aureus</i> biofilm (BSL-2, or a BSL-1 surrogate) for 24 h, static.</li>
   <li><b>Statistics.</b> Use n ≥ 3 coupons per surface on 3 separate days. Analyse with a one-way ANOVA and Dunnett's test against smooth (α = 0.05). Report effect sizes with 95% confidence intervals.</li>
-  <li><b>Pending CFD.</b> Replace the generic waveform with a digitised MRI waveform [5], add an exercise flow case, and rerun the screen, including the 2 µm pattern.</li>
+  <li><b>Pending CFD.</b> Rerun the screen with a digitised MRI waveform [5], an exercise case and the 2 µm pattern.</li>
 </ol>
-<p><b>Limitations.</b> The graft model is idealized and rigid. The waveform shape is generic. The platelet model is simplified: no red cells, no agonist fields, no detachment, and rate constants from collagen. Because deposition is limited by diffusion, the result for protruding designs depends on the modelling choice of where the well-mixed blood begins. Coupons test the surface, not the whole device.</p>
+<p><b>Limitations.</b> The graft model is idealized and rigid. The waveform shape is generic. The platelet model is simplified: no red cells, no agonist fields, no detachment, and rate constants from collagen.</p>
 <p><b>Expected outcome.</b> The computational result is already a useful negative: shark-skin drag-reduction geometry does not transfer to the slow, oscillating flow in a graft limb, and recessing it does not fix that. The bench study tests whether a texture can still help, at the cell scale, where platelets and bacteria actually attach.</p>
 
 <h2>References</h2>

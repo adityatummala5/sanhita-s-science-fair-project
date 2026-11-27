@@ -1,0 +1,4 @@
+design,seeds,rate_late_per_mm2_s_mean,rate_late_per_mm2_s_sd,deposited_per_mm2_mean,deposited_per_mm2_sd,adhered_per_mm2_mean,aggregated_per_mm2_mean,adhered_per_mm2_wetted_mean,pct_in_lower_third,duration_s,deposited_vs_smooth_pct,rate_late_vs_smooth_pct,z_rate_vs_smooth
+smooth,3,339.74,10.19,9978.2,193.4,8334.0,1644.2,8334.0,,20.0,0.0,0.0,0.0
+pet,3,327.5,20.32,10441.7,172.5,8239.6,2202.1,7748.6,21.2,20.0,4.6,-3.6,-0.93
+den_protrude,3,338.93,12.39,12421.8,292.5,10215.9,2205.9,5912.5,24.0,20.0,24.5,-0.2,-0.09

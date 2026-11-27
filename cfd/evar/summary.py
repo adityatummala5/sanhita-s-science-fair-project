@@ -139,11 +139,15 @@ def main():
         axs[1].set_title("slow-flow volume vs smooth (%)\n(lower = less near-wall stasis)", fontsize=9)
         if pl:
             pmap = {r["design"]: r for r in pl}
+            # protruding designs: use the crest-referenced reservoir (nominal reference is a geometric artifact)
+            for r in _csv(os.path.join(sd, "platelets_crestref", "platelet_summary.csv")):
+                if r["design"] != "smooth":
+                    pmap[r["design"]] = r
             v3 = [float(pmap[n].get("rate_late_vs_smooth_pct") or 0) if n in pmap else 0 for n in names]
             e3 = [100 * float(pmap[n]["rate_late_per_mm2_s_sd"]) / float(pmap["smooth"]["rate_late_per_mm2_s_mean"])
                   if n in pmap else 0 for n in names]
             axs[2].barh(names, v3, xerr=e3, color=col)
-            axs[2].set_title("platelet deposition rate vs smooth (%)\n(lower = better), +/- SD over seeds", fontsize=9)
+            axs[2].set_title("platelet deposition rate, 10-20 s, vs smooth (%)\n(lower = better; pet/den_protrude crest-referenced), +/- SD", fontsize=9)
         for ax in axs:
             ax.axvline(0, color="k", lw=0.7)
             ax.tick_params(labelsize=8)
