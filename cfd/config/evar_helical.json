@@ -1,0 +1,22 @@
+{
+  "_comment": "EVAR helical-ridge experiment (plan design G1). Lengths in mm. Half model (symmetry plane y = 0): one iliac limb is simulated; a ridge in it stands for a mirror-image ridge in the other limb.",
+  "period_s": 0.9,
+  "n_cycles": 3,
+  "waveform_csv": "config/waveform_infrarenal_generic.csv",
+  "physics": {"rho": 1060.0, "mu0": 0.056, "mu_inf": 0.00345, "lam": 3.313, "n": 0.3568, "newtonian": false},
+  "mesh": {"bg_mm": 0.5, "wall_level": 1, "ridge_level": 3, "wall_layers": 3},
+  "max_co": 1.0,
+  "snapshots_per_cycle": 20,
+  "designs": [
+    {"name": "smooth", "ridge": null, "refine_like": "ridge_h1_p78",
+     "description": "CONTROL: smooth graft. Mesh refined along the same helical path as ridge_h1_p78 so that only the wall differs."},
+    {"name": "ridge_h1_p78", "ridge": {"height": 1.0, "pitch": 78.0},
+     "description": "Helical ridge 1.0 mm tall (7.7% of limb diameter), pitch 78 mm = 6 limb diameters (~1 turn)"},
+    {"name": "ridge_h1_p39", "ridge": {"height": 1.0, "pitch": 39.0},
+     "description": "Helical ridge 1.0 mm tall, pitch 39 mm = 3 limb diameters (~2 turns)"},
+    {"name": "ridge_h05_p39", "ridge": {"height": 0.5, "pitch": 39.0},
+     "description": "Helical ridge 0.5 mm tall (3.8% of limb diameter), pitch 39 mm"},
+    {"name": "ridge_h05_p78", "ridge": {"height": 0.5, "pitch": 78.0},
+     "description": "Helical ridge 0.5 mm tall, pitch 78 mm"}
+  ]
+}
