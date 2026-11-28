@@ -141,6 +141,7 @@ All dimensions are in mm.
 | `stent+cover.stl` | Stent with the graft cover merged on |
 | `plain stent with connectors.stl` | A single ring unit, 1.33 mm long |
 | `shark-denticle-diamond-layout.stl` | Patch of denticles in a diamond layout |
+| `evar_graft/` | Bifurcated abdominal EVAR graft (Ø26 mm body, Ø14 mm limbs) with overlapping denticle lining; parametric generator + STLs (see its README) |
 | `cad models/.../stent_denticle_CFD_sector.zip` | Sector of the denticle-textured stent, cut down for CFD (~393k triangles) |
 
 ---
